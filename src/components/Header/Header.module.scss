@@ -1,0 +1,27 @@
+.logo {
+	@apply py-[35px] font-medium uppercase cursor-pointer;
+	font-size: 45px;
+	letter-spacing: 2.475px;
+}
+
+.menu {
+	@apply flex items-center gap-[20px];
+
+	> input[type='radio'] {
+		@apply hidden;
+
+		&:checked + label {
+			@apply border-light-green text-light-green;
+		}
+	}
+
+	> label {
+		@apply border-b border-transparent px-[10px] py-[4px] duration-300 uppercase cursor-pointer;
+		font-size: 15px;
+		letter-spacing: 0.3px;
+
+		&:hover {
+			@apply border-light-green text-light-green;
+		}
+	}
+}
