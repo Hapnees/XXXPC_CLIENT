@@ -1,0 +1,34 @@
+.wrapper {
+	@apply grid grid-cols-2 px-[175px] grow;
+
+	animation: opacity 1s normal;
+}
+
+.title {
+	width: 677px;
+	font-size: 65px;
+	letter-spacing: 2.6px;
+	margin-bottom: 25px;
+}
+
+.body {
+	width: 548px;
+	font-size: 25px;
+	letter-spacing: 0.5px;
+}
+
+.special__button {
+	@apply px-[75px] py-[15px];
+	font-size: 20px;
+	letter-spacing: 0.5px;
+}
+
+@keyframes opacity {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
