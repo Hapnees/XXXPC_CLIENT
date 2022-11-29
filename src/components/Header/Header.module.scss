@@ -7,15 +7,15 @@
 .menu {
 	@apply flex items-center gap-[20px];
 
-	> input[type='radio'] {
+	>input[type='radio'] {
 		@apply hidden;
 
-		&:checked + label {
+		&:checked+label {
 			@apply border-light-green text-light-green;
 		}
 	}
 
-	> label {
+	>label {
 		@apply border-b border-transparent px-[10px] py-[4px] duration-300 uppercase cursor-pointer;
 		font-size: 15px;
 		letter-spacing: 0.3px;
