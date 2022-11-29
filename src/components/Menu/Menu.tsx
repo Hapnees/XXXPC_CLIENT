@@ -13,8 +13,8 @@ const Menu: FC<IProps> = ({ titles, topIcon }) => {
 			{topIcon}
 
 			<ul className={cl.menu}>
-				{titles.map(title => (
-					<li>
+				{titles.map((title, idx) => (
+					<li key={idx}>
 						<BsFillGearFill size={16} className='shrink-0' />
 						<p>{title}</p>
 					</li>
