@@ -1,0 +1,27 @@
+.wrapper {
+	@apply inline-flex flex-col items-center gap-6;
+}
+
+.menu {
+	@apply flex flex-col gap-2;
+	width: 280px;
+
+	>li {
+		@apply flex items-center gap-2 border pl-4 py-1 rounded cursor-pointer duration-300;
+		color: rgb(227, 171, 220);
+		background-color: rgba(189, 109, 178, 0.12);
+
+		>p {
+			@apply whitespace-nowrap overflow-hidden text-ellipsis;
+		}
+
+		&:hover {
+			color: rgb(171, 227, 226);
+			background-color: #00ffc823;
+		}
+	}
+}
+
+.big__icon {
+	color: rgb(227, 171, 220);
+}
