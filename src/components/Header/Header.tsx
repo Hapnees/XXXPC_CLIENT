@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import SpecialButton from '../UI/SpecialButton/SpecialButton'
 import cl from './Header.module.scss'
@@ -11,25 +11,20 @@ enum IDs {
 
 const Header = () => {
 	const location = useLocation()
+	const locPath = location.pathname.replace('/', '')
 	const navigate = useNavigate()
-	const [radio, setRadio] = useState('')
 
 	const onClickMenuItem = (id: string) => {
-		setRadio(id)
 		navigate(id)
 	}
-
-	useEffect(() => {
-		if (location.pathname === '/') {
-			setRadio('')
-		}
-	}, [location.pathname])
 
 	return (
 		<header className='flex justify-between px-[175px] items-center'>
 			<div>
 				<Link to='/'>
-					<p className={cl.logo}>HAPPYPC</p>
+					<p className={cl.logo}>
+						<span className='text-[#E3ABDC]'>XXX</span>PC
+					</p>
 				</Link>
 			</div>
 
@@ -38,7 +33,7 @@ const Header = () => {
 					type='radio'
 					name='menu'
 					id={IDs.contact}
-					checked={radio === IDs.contact}
+					checked={locPath === IDs.contact}
 					onChange={() => onClickMenuItem(IDs.contact)}
 				/>
 				<label htmlFor='contact'>связаться</label>
@@ -47,7 +42,7 @@ const Header = () => {
 					type='radio'
 					name='menu'
 					id={IDs.diagnostic}
-					checked={radio === IDs.diagnostic}
+					checked={locPath === IDs.diagnostic}
 					onChange={() => onClickMenuItem(IDs.diagnostic)}
 				/>
 				<label htmlFor='diagnostic'>диагностика</label>
@@ -56,7 +51,7 @@ const Header = () => {
 					type='radio'
 					name='menu'
 					id={IDs.repair}
-					checked={radio === IDs.repair}
+					checked={locPath === IDs.repair}
 					onChange={() => onClickMenuItem(IDs.repair)}
 				/>
 
