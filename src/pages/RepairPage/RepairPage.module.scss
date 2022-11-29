@@ -2,6 +2,29 @@
 	@apply text-center text-[23px];
 }
 
+.carousel {
+	@apply overflow-hidden;
+}
+
+.container {
+	@apply flex duration-300;
+}
+
 .menu__wrapper {
-	@apply pl-[175px] flex gap-12 mt-[50px];
+	@apply px-[175px] flex gap-12 my-[50px];
+	width: 100%;
+}
+
+.arrow {
+	@apply text-[#E3ABDC] cursor-pointer opacity-40;
+}
+
+@keyframes opacity {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
 }
