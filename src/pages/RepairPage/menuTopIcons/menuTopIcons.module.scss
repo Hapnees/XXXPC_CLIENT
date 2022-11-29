@@ -1,0 +1,8 @@
+.big__icon {
+	@apply duration-300;
+	color: rgb(227, 171, 220);
+
+	&:hover {
+		color: rgb(171, 227, 226);
+	}
+}
