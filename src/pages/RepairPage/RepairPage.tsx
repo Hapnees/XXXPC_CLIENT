@@ -73,7 +73,7 @@ const RepairPage = () => {
 					</div>
 				</div>
 			</div>
-			<div className='flex justify-center gap-6'>
+			<div className='flex justify-center gap-6 items-center h-[100px]'>
 				<HiArrowSmLeft
 					size={70}
 					className={cl.arrow}

@@ -1,7 +1,1 @@
-export {
-	menuDrive,
-	menuPC,
-	menuPrinter,
-	menuSmartPhone,
-	menuTV,
-} from './menuTitles'
+export * from './menuTitles'
