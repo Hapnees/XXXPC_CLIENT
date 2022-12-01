@@ -1,0 +1,24 @@
+$avatarSize: 40px;
+
+.container__avatar {
+	@apply flex items-center gap-8 border rounded-md px-6 py-[2px] cursor-pointer duration-300;
+	min-width: 170px;
+	background-color: #a9379c29;
+	border-color: #c36eb7c5;
+	// border-color: #c36eb889;
+
+	&:hover {
+		box-shadow: 0 0 8px #c36eb7c5;
+		background-color: #c93eb629;
+	}
+}
+
+.title {
+	color: #ffdffa;
+}
+
+.avatar {
+	border-radius: 100%;
+	width: $avatarSize;
+	height: $avatarSize;
+}
