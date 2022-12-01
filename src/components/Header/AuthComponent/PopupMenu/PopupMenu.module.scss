@@ -1,0 +1,31 @@
+.menu {
+	@apply absolute right-0 rounded-md;
+	// border: 1px solid transparent;
+	// border-top: transparent;
+	// border-bottom: transparent;
+	// border-top-left-radius: 0;
+	// border-top-right-radius: 0;
+	width: 170px;
+	// box-shadow: 0 0 3px #E3ABDC;
+
+	>li {
+		@apply py-2 px-4 cursor-pointer duration-300;
+		border: 1px solid #ad4ca0a5;
+		border-top: transparent;
+		// background-color: #8c2e7f30;
+		background-color: #a9379c29;
+
+		color: #ffdffa;
+
+		&:last-child {
+			@apply rounded-b-md;
+		}
+
+		&:hover {
+			color: rgb(171, 227, 226);
+			background-color: #00ffc823;
+			border-color: #229a80c9;
+		}
+
+	}
+}
