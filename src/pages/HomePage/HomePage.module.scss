@@ -17,8 +17,9 @@
 	letter-spacing: 0.5px;
 }
 
-.special__button {
-	@apply px-[75px] py-[15px];
+.button {
+	@apply border border-transparent bg-light-green text-dark-blue px-[75px] py-[15px] font-semibold uppercase rounded-md;
+	font-family: Roboto;
 	font-size: 20px;
 	letter-spacing: 0.5px;
 }

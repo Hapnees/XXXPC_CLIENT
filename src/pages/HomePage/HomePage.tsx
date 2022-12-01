@@ -14,7 +14,7 @@ const HomePage = () => {
 						которая должна занимать 3 строчки
 					</p>
 				</div>
-				<SpecialButton className={cl.special__button}>кнопка</SpecialButton>
+				<button className={cl.button}>кнопка</button>
 			</div>
 
 			<div className='flex items-center justify-end'>
