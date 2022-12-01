@@ -13,15 +13,33 @@
 		&:checked+label {
 			@apply border-light-green text-light-green;
 		}
+
+		&:checked+label::after {
+			@apply bg-light-green;
+		}
 	}
 
 	>label {
-		@apply border-b border-transparent px-[10px] py-[4px] duration-300 uppercase cursor-pointer;
+		@apply flex justify-center relative px-[10px] py-[4px] duration-300 uppercase cursor-pointer;
 		font-size: 15px;
 		letter-spacing: 0.3px;
 
+		&::after {
+			content: '';
+			display: block;
+			position: absolute;
+			bottom: -2px;
+			height: 1px;
+			width: 100%;
+			@apply duration-300;
+		}
+
 		&:hover {
 			@apply border-light-green text-light-green;
+		}
+
+		&:hover::after {
+			@apply bg-light-green;
 		}
 	}
 }

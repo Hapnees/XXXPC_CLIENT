@@ -1,6 +1,12 @@
 .button {
-	@apply bg-light-green text-dark-blue px-[50px] py-[10px] font-semibold uppercase rounded-md;
+	@apply border border-transparent bg-light-green text-dark-blue px-[40px] py-[6px] font-semibold uppercase rounded-md;
 	font-family: Roboto;
 	font-size: 16px;
 	letter-spacing: 0.2px;
+}
+
+.button__clicked {
+	background-color: transparent;
+	color: #00ffc8b3;
+	border-color: #00ffc8b3;
 }

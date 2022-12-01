@@ -14,3 +14,51 @@ body {
 	font-family: Roboto, monospace;
 	color: #fff;
 }
+
+// ANIMATIONS 
+
+
+// ALERT-ANIMATION
+.alert-enter {
+	opacity: 0;
+	transform: scale(0.9);
+}
+
+.alert-enter-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: opacity 300ms, transform 300ms;
+}
+
+.alert-exit {
+	opacity: 1;
+}
+
+.alert-exit-active {
+	opacity: 0;
+	transform: scale(0.9);
+	transition: opacity 300ms, transform 300ms;
+}
+
+// POPUP-ANIMATION
+.popup-enter {
+	opacity: 0;
+	transform: translateY(-15px);
+}
+
+.popup-enter-active {
+	opacity: 1;
+	transform: translateY(0);
+	transition: opacity 300ms, transform 300ms;
+}
+
+.popup-exit {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.popup-exit-active {
+	opacity: 0;
+	transform: translateY(-15px);
+	transition: opacity 300ms, transform 300ms;
+}

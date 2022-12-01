@@ -1,0 +1,9 @@
+.container {
+	@apply relative rounded;
+	background-color: #001;
+	box-shadow: 0 0 3px #E3ABDC;
+}
+
+.content {
+	@apply flex flex-col items-center px-6 py-4;
+}

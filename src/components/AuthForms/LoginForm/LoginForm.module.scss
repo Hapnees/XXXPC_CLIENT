@@ -1,0 +1,21 @@
+.button {
+	@apply border text-[18px] py-[2px] rounded duration-300;
+	border-color: #855f7fbe;
+	background-color: #cc36b62b;
+
+	&:hover {
+		background-color: #d44fc08d;
+		border-color: transparent
+	}
+}
+
+.button__google {
+	@apply flex items-center gap-2 justify-center border text-[18px] py-[2px] rounded w-full cursor-pointer duration-300;
+	border-color: #4a9f8cca;
+	background-color: #19d9b045;
+
+	&:hover {
+		background-color: #17b69393;
+		border-color: transparent
+	}
+}
