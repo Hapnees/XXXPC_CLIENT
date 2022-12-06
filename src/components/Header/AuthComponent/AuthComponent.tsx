@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import avatar from '../../../assets/img/avatar.jpg'
+import { usernameFormat } from '../../../utils/username.format'
 import cl from './AuthComponent.module.scss'
 import PopupMenu from './PopupMenu/PopupMenu'
 
@@ -27,7 +28,7 @@ const AuthComponent: FC<IProps> = ({ username }) => {
 				}
 			>
 				<img src={avatar} className={cl.avatar} alt='' />
-				<p className={cl.title}>{username}</p>
+				<p className={cl.title}>{usernameFormat(username)}</p>
 			</div>
 			<CSSTransition
 				in={isOpenPopup}
@@ -35,7 +36,7 @@ const AuthComponent: FC<IProps> = ({ username }) => {
 				classNames='popup'
 				unmountOnExit
 			>
-				<PopupMenu />
+				<PopupMenu closePopup={() => setIsOpenPopup(false)} />
 			</CSSTransition>
 		</div>
 	)
