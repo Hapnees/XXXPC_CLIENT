@@ -1,0 +1,21 @@
+.card__top__content {
+	@apply flex gap-4 items-center px-4 py-2 mb-1;
+
+	color: #ffc8f7;
+
+	>p {
+		@apply text-[20px];
+	}
+}
+
+.button {
+	@apply text-[18px] px-12 py-2 duration-300;
+	color: #00FFC6;
+	background-color: #1c5f515f;
+	border: 1px solid #31ac915f;
+	border-radius: 5px;
+
+	&:hover {
+		background-color: #267a685f;
+	}
+}
