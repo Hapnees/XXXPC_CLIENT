@@ -15,6 +15,10 @@ body {
 	color: #fff;
 }
 
+.button {
+	font-family: Roboto, monospace;
+}
+
 // ANIMATIONS 
 
 
@@ -60,5 +64,28 @@ body {
 .popup-exit-active {
 	opacity: 0;
 	transform: translateY(-15px);
+	transition: opacity 300ms, transform 300ms;
+}
+
+// DETAILS-ANIMATION
+.details-enter {
+	opacity: 0;
+	transform: translateY(-7px);
+}
+
+.details-enter-active {
+	opacity: 1;
+	transform: translateY(0);
+	transition: opacity 300ms, transform 300ms;
+}
+
+.details-exit {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.details-exit-active {
+	opacity: 0;
+	transform: translateY(-7px);
 	transition: opacity 300ms, transform 300ms;
 }
