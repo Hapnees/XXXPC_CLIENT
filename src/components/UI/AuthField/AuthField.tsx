@@ -4,15 +4,10 @@ import cl from './AuthField.module.scss'
 import { BiErrorCircle } from 'react-icons/bi'
 
 const AuthField = forwardRef<HTMLInputElement, IField>(
-	({ error, ...props }, ref) => {
+	({ error, className, ...props }, ref) => {
 		return (
 			<div className={cl.wrapper}>
-				<input
-					className={cl.input}
-					style={{ width: 280 }}
-					ref={ref}
-					{...props}
-				/>
+				<input className={`${cl.input} ${className}`} ref={ref} {...props} />
 
 				{error && (
 					<div className={cl.wrapper__error}>
