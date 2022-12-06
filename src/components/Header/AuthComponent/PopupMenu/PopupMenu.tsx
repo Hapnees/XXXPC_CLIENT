@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { FC } from 'react'
+import { Link } from 'react-router-dom'
 import { useLogoutMutation } from '../../../../api/auth.api'
 import { useActions } from '../../../../hooks/useActions'
 import { useAppSelector } from '../../../../hooks/useAppSelector'
 import cl from './PopupMenu.module.scss'
 
-const PopupMenu = () => {
+interface IProps {
+	closePopup: () => void
+}
+
+const PopupMenu: FC<IProps> = ({ closePopup }) => {
 	const [logout] = useLogoutMutation()
 	const { authLogout } = useActions()
 	const { accessToken } = useAppSelector(state => state.auth)
@@ -12,11 +17,17 @@ const PopupMenu = () => {
 
 	const onClickLogout = async () => {
 		logout(headers).then(() => authLogout())
+		closePopup()
 	}
 
 	return (
 		<ul className={cl.menu}>
-			<li>Профиль</li>
+			<li onClick={closePopup}>
+				<Link to='profile'>
+					<p>Профиль</p>
+				</Link>
+			</li>
+
 			<li onClick={onClickLogout}>Выйти</li>
 		</ul>
 	)
