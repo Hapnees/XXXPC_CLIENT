@@ -1,0 +1,44 @@
+.wrapper__menu__categories {
+	background-color: #c657b5b3;
+	width: 200px;
+	height: 50px;
+}
+
+.panel {}
+
+.menu__categories {
+	>li {}
+}
+
+.top__title {
+	color: #ffd2f8;
+	font-size: 25px;
+}
+
+.avatar {
+	border: 2px solid #b960ac;
+	cursor: pointer;
+	border-radius: 6px;
+	width: 200px;
+	height: 250px;
+	transition: border .3s, box-shadow .3s;
+
+	&:hover {
+		border-color: #47c2a7;
+		box-shadow: 0 0 20px #47c2a7;
+	}
+}
+
+.avatar__text {
+	@apply text-center cursor-pointer;
+	color: #ffe0fa;
+	transition: color .3s;
+
+	&:hover {
+		color: #5debcc;
+	}
+}
+
+.input {
+	background-color: transparent;
+}
