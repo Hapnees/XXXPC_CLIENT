@@ -1,0 +1,8 @@
+.menu {
+	@apply flex flex-col gap-1;
+
+	>li {
+		@apply flex gap-2 items-center;
+		color: #81ffe4ce;
+	}
+}
