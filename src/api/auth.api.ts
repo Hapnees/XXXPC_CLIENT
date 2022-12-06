@@ -1,7 +1,7 @@
 import { ILoginForm } from '../components/AuthForms/LoginForm/LoginForm.interface'
 import { IRegisterForm } from '../components/AuthForms/RegisterForm/RegisterForm.interface'
-import { IAuthResponse } from '../interfaces/auth-response.interface'
-import { ITokens } from '../interfaces/tokens.interface'
+import { IAuthResponse } from '../interfaces/auth/auth-response.interface'
+import { ITokens } from '../interfaces/auth/tokens.interface'
 import { baseApi } from './baseApi.api'
 
 const authApi = baseApi.injectEndpoints({
