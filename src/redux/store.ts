@@ -11,6 +11,7 @@ import {
 	REGISTER,
 } from 'redux-persist'
 import persistReducer from 'redux-persist/es/persistReducer'
+import { ErrorHandler } from '../middlewares/error-handler.middleware'
 
 const rootReducer = combineReducers({
 	[baseApi.reducerPath]: baseApi.reducer,
@@ -33,7 +34,7 @@ export const store = configureStore({
 			serializableCheck: {
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
-		}).concat(baseApi.middleware),
+		}).concat([baseApi.middleware, ErrorHandler]),
 })
 
 export type TypeRootState = ReturnType<typeof store.getState>
