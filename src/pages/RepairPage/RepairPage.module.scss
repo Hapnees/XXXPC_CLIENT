@@ -1,31 +1,21 @@
 .top__title {
-	@apply text-center text-[23px];
+	@apply text-[23px];
 }
 
-.carousel {
-	@apply overflow-hidden;
-	height: 500px
-}
+.menu {
+	@apply inline-grid grid-cols-4;
+	grid-column-gap: 20px;
+	grid-row-gap: 40px;
 
-.container {
-	@apply flex duration-300;
-}
+	>li {
+		@apply flex flex-col items-center pb-4;
+		width: 400px;
+		color: #e4a6db;
+		background-color: #923d8520;
+		box-shadow: 0 0 5px #f252da;
 
-.menu__wrapper {
-	@apply px-[175px] flex gap-12 my-[50px];
-	width: 100%;
-}
-
-.arrow {
-	@apply text-[#E3ABDC] cursor-pointer opacity-40;
-}
-
-@keyframes opacity {
-	from {
-		opacity: 0;
-	}
-
-	to {
-		opacity: 1;
+		border: 1px solid #ffdffa;
+		border-radius: 10px;
+		border-color: #c672b9;
 	}
 }
