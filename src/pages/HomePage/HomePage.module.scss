@@ -4,6 +4,11 @@
 	animation: opacity 1s normal;
 }
 
+.text__container {
+	@apply mb-[40px] duration-300;
+	height: 334px;
+}
+
 .title {
 	width: 677px;
 	font-size: 65px;
