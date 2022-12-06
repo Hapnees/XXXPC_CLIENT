@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { useRegisterMutation } from '../../../api/auth.api'
 import { useActions } from '../../../hooks/useActions'
 import AuthField from '../../UI/AuthField/AuthField'
@@ -25,6 +26,7 @@ const RegisterForm: FC<IProps> = ({ setAuthState, closeWindow }) => {
 		registerUser(data)
 			.unwrap()
 			.then(response => {
+				toast.success('Вы успешно зарегестрировались')
 				setAuth(response)
 				closeWindow()
 			})
