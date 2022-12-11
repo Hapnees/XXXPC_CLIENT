@@ -1,138 +1,155 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import { useGetProfileQuery, useUpdateUserMutation } from '../../api/user.api'
-import AuthField from '../../components/UI/AuthField/AuthField'
-import { useAppSelector } from '../../hooks/useAppSelector'
-import { IUserUpdate } from '../../interfaces/user-update.interface'
+import ProfilePageField from '../../components/UI/ProfilePageField/ProfilePageField'
+import { useProfle } from '../../hooks/useProfile'
+import { useUpdateUser } from '../../hooks/useUpdateUser'
+import { ImageValidator } from '../../validators/image.validator'
 import cl from './ProfilePage.module.scss'
+import { BsCheckCircleFill } from 'react-icons/bs'
+import { MdWarning } from 'react-icons/md'
+import { useSendEmailMutation } from '../../api/mail.api'
+import { useHeaders } from '../../hooks/useHeaders'
+import { toast } from 'react-toastify'
+import Loader from '../../components/UI/Loader/Loader'
+import { IUserUpdate } from '../../interfaces/user/user-update.interface'
 
-// TODO: добавить паттерн для номера телефона
+const emailPattern =
+  /^(([^<>()[\]\.,;:\s@"]+(\.[^<>()[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+const phonePattern = /^[+]?\d+$/
+const usernamePattern = /^[^\d+]/
 
 const ProfilePage = () => {
-	const [avatar, setAvatar] = useState('')
-	const { accessToken } = useAppSelector(state => state.auth)
-	const headers = { authorization: `Bearer ${accessToken}` }
-	const [updateUser] = useUpdateUserMutation()
-	const { data: userData, refetch } = useGetProfileQuery(headers)
-	const isFirst = useRef(true)
+  const headers = useHeaders()
+  const [sendEmail] = useSendEmailMutation()
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatar, setAvatar] = useState<File>()
+  const updateUser = useUpdateUser(avatar)
 
-	const {
-		register,
-		formState: { errors },
-		handleSubmit,
-		setValue,
-	} = useForm<IUserUpdate>({ mode: 'onChange' })
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+  } = useForm<IUserUpdate>({ mode: 'onChange' })
 
-	// Заполняем поля при загрузке страницы
-	useEffect(() => {
-		if (isFirst.current) {
-			refetch()
-			isFirst.current = false
-		}
+  // Получаем данные о пользователе и заполняем ими поля при загрузке страницы
+  const { data: userData, isLoading } = useProfle(setValue)
 
-		setValue('username', userData?.username)
-		setValue('email', userData?.email)
-		setValue('phone', userData?.phone || '')
-	}, [userData])
+  const onChangeAvatar = (event: any) => {
+    const file = event.target.files[0]
+    ImageValidator(file.name)
 
-	const onChangeAvatar = (event: any) => {
-		const file = event.target.files[0]
-		const url = URL.createObjectURL(file)
-		setAvatar(url)
-	}
+    setAvatar(file)
+    const url = URL.createObjectURL(file)
+    setAvatarUrl(url)
+  }
 
-	const onSubmit: SubmitHandler<IUserUpdate> = async data => {
-		data.avatarPath = avatar
-		updateUser({ body: data, headers }).then(() =>
-			toast.success('Профиль успешно обновлён')
-		)
-	}
+  const onSubmit: SubmitHandler<IUserUpdate> = async data => {
+    updateUser(data)
+  }
 
-	return (
-		<>
-			{userData ? (
-				<div className='flex flex-col items-center'>
-					<div className='flex gap-[100px]'>
-						<div className={cl.wrapper__menu__categories}>
-							<div className={cl.panel}></div>
-							<ul className={cl.menu__categories}></ul>
-						</div>
+  return (
+    <div className={cl.wrapper}>
+      <div className={cl.container}>
+        <p className={cl.top__title}>Редактирование профиля</p>
 
-						<div>
-							<p className={cl.top__title}>Редактирование профиля</p>
-							<form onSubmit={handleSubmit(onSubmit)} className='w-[550px]'>
-								<div className='flex justify-between mt-8'>
-									<div>
-										<input
-											type='file'
-											accept='.jpg, .png, .jpeg'
-											className='hidden'
-											id='avatar'
-											onChange={event => onChangeAvatar(event)}
-										/>
-										<label htmlFor='avatar'>
-											<img
-												src={avatar || userData.avatarPath || ''}
-												alt=''
-												className={cl.avatar}
-											/>
-											<p className={cl.avatar__text}>Изменить фото</p>
-										</label>
-									</div>
-									<div className='flex flex-col items-center gap-4 text-[#ffe0fa]'>
-										<div className='flex flex-col gap-1'>
-											<p>Имя пользователя</p>
-											<AuthField
-												type='text'
-												className={cl.input}
-												placeholder='Имя пользователя'
-												{...register('username', {
-													required: 'Обязательное поле',
-													minLength: { value: 3, message: 'Минимум 3 символа' },
-												})}
-												error={errors.username}
-											/>
-										</div>
-										<div className='flex flex-col gap-1'>
-											<p>Почта</p>
-											<AuthField
-												type='email'
-												className={cl.input}
-												placeholder='Почта'
-												{...register('email', {
-													required: 'Обязательное поле',
-													pattern: {
-														value:
-															/^(([^<>()[\]\.,;:\s@"]+(\.[^<>()[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-														message: 'Некорректный email',
-													},
-												})}
-												error={errors.email}
-											/>
-										</div>
-										<div className='flex flex-col gap-1'>
-											<p>Номер телефона</p>
-											<AuthField
-												type='text'
-												className={cl.input}
-												placeholder='Номер телефона'
-												{...register('phone')}
-												error={errors.phone}
-											/>
-										</div>
-									</div>
-								</div>
-								<button>PUSH</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			) : (
-				<></>
-			)}
-		</>
-	)
+        {isLoading ? (
+          <Loader />
+        ) : (
+          userData && (
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className='flex flex-col gap-[100px] h-[570px]'
+            >
+              <div className={cl.form__content}>
+                <div>
+                  <input
+                    type='file'
+                    accept='.jpg, .png, .jpeg, .PNG'
+                    className='hidden'
+                    id='avatar'
+                    onChange={event => onChangeAvatar(event)}
+                  />
+                  <label htmlFor='avatar'>
+                    <img
+                      src={avatarUrl || userData.avatarPath || ''}
+                      alt=''
+                      className={cl.avatar}
+                    />
+                    <p className={cl.avatar__text}>Изменить фото</p>
+                  </label>
+                </div>
+                <div className='flex flex-col items-start gap-4 text-[#ffe0fa]'>
+                  <ProfilePageField
+                    title='Имя пользователя'
+                    type='text'
+                    className={cl.input}
+                    placeholder='Имя пользователя'
+                    {...register('username', {
+                      required: 'Обязательное поле',
+                      minLength: { value: 3, message: 'Минимум 3 символа' },
+                      pattern: {
+                        value: usernamePattern,
+                        message: 'Некорректное имя пользователя',
+                      },
+                    })}
+                    error={errors.username}
+                  />
+                  <ProfilePageField
+                    title='Почта'
+                    type='email'
+                    className={cl.input}
+                    placeholder='Почта'
+                    {...register('email', {
+                      required: 'Обязательное поле',
+                      pattern: {
+                        value: emailPattern,
+                        message: 'Некорректный email',
+                      },
+                    })}
+                    error={errors.email}
+                  />
+                  <ProfilePageField
+                    title='Новый пароль'
+                    type='password'
+                    className={cl.input}
+                    placeholder='Новый пароль'
+                    {...register('password', {
+                      minLength: { value: 6, message: 'Минимум 6 символов' },
+                    })}
+                    error={errors.password}
+                  />
+                  <div className='flex flex-col gap-1'>
+                    <ProfilePageField
+                      title='Номер телефона'
+                      type='text'
+                      className={cl.input}
+                      placeholder='Номер телефона'
+                      {...register('phone', {
+                        pattern: {
+                          value: phonePattern,
+                          message: 'Некорректный номер телефона',
+                        },
+                      })}
+                      error={errors.phone}
+                    />
+                    {!userData.phone && (
+                      <p className={cl.phone__text}>
+                        Введите номер телефона для улучшения обратной связи
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <button className={cl.button}>Сохранить</button>
+            </form>
+          )
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default ProfilePage

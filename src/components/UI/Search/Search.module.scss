@@ -1,11 +1,12 @@
 .input {
-	@apply text-[20px] bg-[#000] text-[#fff] px-2 py-[2px] rounded;
-	width: 400px;
-	box-shadow: 0 0 5px rgba(177, 52, 152, 0.801);
-
-	color: rgb(233, 206, 233);
+	@apply px-2 py-1;
+	color: #edf2f7;
+	background-color: #1a202c;
+	border-radius: 6px;
+	width: 100%;
+	font-size: 18px;
 
 	&::placeholder {
-		color: rgb(134, 105, 134);
+		color: #3c525a;
 	}
 }

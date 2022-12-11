@@ -1,14 +1,16 @@
 .menu {
 	@apply absolute right-0 rounded-md;
-	width: 187px;
+	box-shadow: 0 1px 8px #c36eb7c5;
+	width: 192px;
 
 	>li {
-		@apply py-2 px-4 cursor-pointer duration-300;
+		@apply py-2 px-4 cursor-pointer;
 		border: 1px solid #ad4ca0a5;
 		border-top: transparent;
-		// background-color: #8c2e7f30;
+		transition: background-color .3s, color .3s;
+		height: 100%;
 
-		background-color: transparent;
+		background-color: #150212;
 
 		color: #ffdffa;
 
@@ -19,10 +21,7 @@
 		&:hover {
 
 			color: #ffdffa;
-			background-color: #a9379c29;
-			// background-color: #00ffc823;
-			// color: rgb(171, 227, 226);
-			// border-color: #229a80c9;
+			background-color: #32102f;
 		}
 
 	}

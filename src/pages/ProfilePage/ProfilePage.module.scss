@@ -1,18 +1,24 @@
-.wrapper__menu__categories {
-	background-color: #c657b5b3;
-	width: 200px;
-	height: 50px;
+.wrapper {
+	@apply flex justify-center;
 }
 
-.panel {}
-
-.menu__categories {
-	>li {}
+.container {
+	@apply px-6 py-4 rounded-lg;
+	background-color: #16071443;
+	box-shadow: 0 0 8px #c36eb7c5;
 }
 
 .top__title {
+	text-align: center;
 	color: #ffd2f8;
 	font-size: 25px;
+}
+
+.form__content {
+	@apply mt-8 grow;
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+	grid-column-gap: 40px;
 }
 
 .avatar {
@@ -41,4 +47,46 @@
 
 .input {
 	background-color: transparent;
+}
+
+.phone__text {
+	color: #ffc2f7;
+}
+
+.container__verified {
+	font-size: 18px;
+}
+
+.is__verified {
+	@apply flex items-center gap-2;
+	color: #5ee6c8;
+}
+
+.is__not_verified {
+	@apply flex items-center gap-2;
+	color: #c3d257;
+}
+
+.button {
+	@apply self-end py-1 text-[18px] w-[120px] duration-300;
+	color: #00FFC6;
+	background-color: #1c5f515f;
+	border: 1px solid #31ac915f;
+	border-radius: 5px;
+
+	&:hover {
+		background-color: #267a685f;
+	}
+}
+
+.button__confirm {
+	@apply self-end py-1 text-[18px] px-4 duration-300;
+	color: #ffcdf8;
+	background-color: #43203e35;
+	border: 1px solid #9b5892c5;
+	border-radius: 5px;
+
+	&:hover {
+		background-color: #833e7835;
+	}
 }

@@ -1,36 +1,54 @@
-import React, { FC } from 'react'
-import { Link } from 'react-router-dom'
+import React, { FC, forwardRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLogoutMutation } from '../../../../api/auth.api'
 import { useActions } from '../../../../hooks/useActions'
 import { useAppSelector } from '../../../../hooks/useAppSelector'
 import cl from './PopupMenu.module.scss'
 
 interface IProps {
-	closePopup: () => void
+  closePopup: () => void
 }
 
-const PopupMenu: FC<IProps> = ({ closePopup }) => {
-	const [logout] = useLogoutMutation()
-	const { authLogout } = useActions()
-	const { accessToken } = useAppSelector(state => state.auth)
-	const headers = { authorization: `Bearer ${accessToken}` }
+const PopupMenu = forwardRef<HTMLUListElement, IProps>(
+  ({ closePopup }, ref) => {
+    const navigate = useNavigate()
+    const [logout] = useLogoutMutation()
+    const { authLogout } = useActions()
+    const { accessToken } = useAppSelector(state => state.auth)
+    const headers = { authorization: `Bearer ${accessToken}` }
 
-	const onClickLogout = async () => {
-		logout(headers).then(() => authLogout())
-		closePopup()
-	}
+    const onClickLogout = async () => {
+      logout(headers).then(() => authLogout())
+      closePopup()
+    }
 
-	return (
-		<ul className={cl.menu}>
-			<li onClick={closePopup}>
-				<Link to='profile'>
-					<p>Профиль</p>
-				</Link>
-			</li>
+    const onClickProfile = () => {
+      navigate('profile')
+      closePopup()
+    }
 
-			<li onClick={onClickLogout}>Выйти</li>
-		</ul>
-	)
-}
+    const onClickOrders = () => {
+      navigate('orders')
+      closePopup()
+    }
+
+    return (
+      <ul className={cl.menu} ref={ref}>
+        <li onClick={onClickProfile}>
+          <p>Профиль</p>
+        </li>
+        <li onClick={onClickOrders}>
+          <Link to='orders'>
+            <p>Мои заказы</p>
+          </Link>
+        </li>
+
+        <li onClick={onClickLogout}>Выйти</li>
+      </ul>
+    )
+  }
+)
+
+PopupMenu.displayName = 'PopupMenu'
 
 export default PopupMenu

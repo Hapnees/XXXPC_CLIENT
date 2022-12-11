@@ -6,7 +6,7 @@ import { BiErrorCircle } from 'react-icons/bi'
 const AuthField = forwardRef<HTMLInputElement, IField>(
 	({ error, className, ...props }, ref) => {
 		return (
-			<div className={cl.wrapper}>
+			<div>
 				<input className={`${cl.input} ${className}`} ref={ref} {...props} />
 
 				{error && (

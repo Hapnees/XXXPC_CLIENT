@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { FC, HTMLAttributes } from 'react'
 import cl from './Search.module.scss'
 
-const Search = () => {
-	return <input type='text' className={cl.input} placeholder='Какой-то текст' />
+const Search: FC<HTMLAttributes<HTMLInputElement>> = props => {
+  return <input type='text' className={cl.input} {...props} />
 }
 
 export default Search

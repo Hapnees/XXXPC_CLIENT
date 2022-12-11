@@ -1,13 +1,15 @@
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { authActions } from '../redux/slices/auth.slice'
+import { tabActions } from '../redux/slices/tab.slice'
 
 const allActions = {
-	...authActions,
+  ...authActions,
+  ...tabActions,
 }
 
 export const useActions = () => {
-	const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-	return bindActionCreators(allActions, dispatch)
+  return bindActionCreators(allActions, dispatch)
 }

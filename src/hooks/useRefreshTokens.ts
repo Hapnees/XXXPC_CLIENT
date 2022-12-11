@@ -1,0 +1,48 @@
+import { useEffect } from 'react'
+import { useRefreshTokensMutation } from '../api/auth.api'
+import { useActions } from './useActions'
+import { useAppSelector } from './useAppSelector'
+import { useAuth } from './useAuth'
+import { useHeaders } from './useHeaders'
+
+export const useRefreshTokens = () => {
+  const { setAuth } = useActions()
+  const [refreshTokens] = useRefreshTokensMutation()
+  const { refreshToken } = useAppSelector(state => state.auth)
+  const headers = useHeaders(refreshToken)
+  const isAuth = useAuth()
+
+  // Обновляем токены при входе на сайт
+  useEffect(() => {
+    if (!isAuth) return
+
+    refreshTokens(headers)
+      .unwrap()
+      .then(response =>
+        setAuth({
+          accessToken: response.tokens.accessToken,
+          refreshToken: response.tokens.refreshToken,
+          user: { role: response.role },
+        })
+      )
+  }, [])
+
+  // Обновляем токены каждые 14 минут
+  useEffect(() => {
+    if (!isAuth) return
+
+    const interval = setInterval(() => {
+      refreshTokens(headers)
+        .unwrap()
+        .then(response =>
+          setAuth({
+            accessToken: response.tokens.accessToken,
+            refreshToken: response.tokens.refreshToken,
+            user: { role: response.role },
+          })
+        )
+    }, 60_000 * 14)
+
+    return () => clearInterval(interval)
+  }, [isAuth])
+}
