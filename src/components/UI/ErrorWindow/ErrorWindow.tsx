@@ -1,18 +1,26 @@
 import React, { FC } from 'react'
 import { BsArrowRightShort } from 'react-icons/bs'
+import { AdminError } from '../../../interfaces/adminInterfaces/error.interface'
 import cl from './ErrorWindow.module.scss'
 
 interface IProps {
-  messages: string[]
+  errors: AdminError[]
 }
 
-const ErrorWindow: FC<IProps> = ({ messages }) => {
+const ErrorWindow: FC<IProps> = ({ errors }) => {
   return (
     <ul className={cl.menu}>
-      {messages.map((message, idx) => (
-        <li key={idx}>
-          <BsArrowRightShort size={20} />
-          <p>{message}</p>
+      {errors.map(error => (
+        <li key={error.id}>
+          {/* <BsArrowRightShort size={20} /> */}
+          <div>
+            <p className='font-semibold'>№ {error.id}</p>
+            <ul>
+              {error.errors.map((el, idx) => (
+                <li key={idx}>{el.msg}</li>
+              ))}
+            </ul>
+          </div>
         </li>
       ))}
     </ul>

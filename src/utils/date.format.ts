@@ -1,7 +1,9 @@
 export const dateFormat = (
-  date: string,
+  date: string | undefined,
   { withTime }: { withTime: boolean } = { withTime: false }
 ) => {
+  if (!date) return ''
+
   const temp = date.split('T')[0]
   const splittedDate = temp.split('-')
   const result = splittedDate.reverse().join('.')

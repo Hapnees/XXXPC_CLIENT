@@ -8,7 +8,7 @@ export interface UsersGetResponse {
   hash?: string
   hashedRt: string
   avatarPath: string
-  phone: string
+  phone?: string
   updatedAt?: string
   createdAt?: string
 }

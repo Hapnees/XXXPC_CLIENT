@@ -2,10 +2,27 @@
 	@apply flex justify-center mt-12;
 }
 
-.button__apply {
-	@apply px-2;
+.button {
+	@apply flex items-center gap-2 px-2;
 	border-radius: 6px;
 	background-color: #434e62;
+	transition: background-color .3s;
+}
+
+.button__update {
+	@extend .button;
+
+	&:hover {
+		background-color: rgba(146, 146, 0, 0.652)
+	}
+}
+
+.button__create {
+	@extend .button;
+
+	&:hover {
+		background-color: rgba(44, 146, 0, 0.652)
+	}
 }
 
 .top__menu {
@@ -54,6 +71,10 @@
 
 .zero {
 	padding: 0 !important;
+}
+
+.center {
+	text-align: center;
 }
 
 .input {

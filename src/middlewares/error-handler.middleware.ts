@@ -17,9 +17,8 @@ export const ErrorHandler: Middleware =
           toast.error(message || 'Ошибка')
         })
       } else if (action.payload.data) {
-        const errors = (action.payload as AdminError).data
-        const errorMessages = errors.map(el => el.message)
-        toast.error(ErrorWindow({ messages: errorMessages }), {
+        const errors = action.payload.data as AdminError[]
+        toast.error(ErrorWindow({ errors }), {
           style: { width: '450px' },
         })
       } else {
