@@ -1,8 +1,8 @@
 import React from 'react'
-import { useActions } from '../../../../hooks/useActions'
-import { useAppSelector } from '../../../../hooks/useAppSelector'
-import { Tabs } from '../../../../interfaces/tabs.interface'
-import Search from '../../../UI/Search/Search'
+import { useActions } from '@hooks/useActions'
+import { useAppSelector } from '@hooks/useAppSelector'
+import { Tabs } from '@interfaces/tabs.interface'
+import Search from '@components/UI/Search/Search'
 import cl from './OpenModelForm.module.scss'
 
 const OpenModelForm = () => {

@@ -1,8 +1,7 @@
 import React, { FC, forwardRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLogoutMutation } from '../../../../api/auth.api'
-import { useActions } from '../../../../hooks/useActions'
-import { useAppSelector } from '../../../../hooks/useAppSelector'
+import { useLogoutMutation } from '@api/auth.api'
+import { useActions, useAppSelector } from '@hooks/index'
 import cl from './PopupMenu.module.scss'
 
 interface IProps {

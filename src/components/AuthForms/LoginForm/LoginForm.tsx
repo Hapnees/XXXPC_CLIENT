@@ -1,10 +1,10 @@
 import React, { FC } from 'react'
-import AuthField from '../../UI/AuthField/AuthField'
+import { AuthField } from '@components/UI/AdminUi'
 import cl from './LoginForm.module.scss'
 import { BsGoogle } from 'react-icons/bs'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ILoginForm } from './LoginForm.interface'
-import { useLogin } from '../../../hooks/useLogin'
+import { useLogin } from '@hooks/useLogin'
 
 interface IProps {
   setAuthState: () => void

@@ -1,5 +1,5 @@
 export interface IUploadImage {
-	image: FormData
-	userId: number
-	folder?: string
+  image: FormData
+  id: number
+  folder?: string
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Roles } from '../interfaces/roles.interface'
+import { Roles } from '@interfaces/roles.interface'
 import { useAppSelector } from './useAppSelector'
 
 // Авторизован ли пользователь

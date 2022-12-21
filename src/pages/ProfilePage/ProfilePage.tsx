@@ -1,17 +1,11 @@
 import React, { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import ProfilePageField from '../../components/UI/ProfilePageField/ProfilePageField'
-import { useProfle } from '../../hooks/useProfile'
-import { useUpdateUser } from '../../hooks/useUpdateUser'
-import { ImageValidator } from '../../validators/image.validator'
+import ProfilePageField from '@components/UI/ProfilePageField/ProfilePageField'
+import Loader from '@components/UI/Loader/Loader'
+import { useUpdateUser, useProfle } from '@hooks/index'
+import { ImageValidator } from '@validators/image.validator'
 import cl from './ProfilePage.module.scss'
-import { BsCheckCircleFill } from 'react-icons/bs'
-import { MdWarning } from 'react-icons/md'
-import { useSendEmailMutation } from '../../api/mail.api'
-import { useHeaders } from '../../hooks/useHeaders'
-import { toast } from 'react-toastify'
-import Loader from '../../components/UI/Loader/Loader'
-import { IUserUpdate } from '../../interfaces/user/user-update.interface'
+import { IUserUpdate } from '@interfaces/user/user-update.interface'
 
 const emailPattern =
   /^(([^<>()[\]\.,;:\s@"]+(\.[^<>()[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -20,8 +14,6 @@ const phonePattern = /^[+]?\d+$/
 const usernamePattern = /^[^\d+]/
 
 const ProfilePage = () => {
-  const headers = useHeaders()
-  const [sendEmail] = useSendEmailMutation()
   const [avatarUrl, setAvatarUrl] = useState('')
   const [avatar, setAvatar] = useState<File>()
   const updateUser = useUpdateUser(avatar)
@@ -36,7 +28,9 @@ const ProfilePage = () => {
   // Получаем данные о пользователе и заполняем ими поля при загрузке страницы
   const { data: userData, isLoading } = useProfle(setValue)
 
-  const onChangeAvatar = (event: any) => {
+  const onChangeAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return
+
     const file = event.target.files[0]
     ImageValidator(file.name)
 

@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useGetOrdersQuery } from '../../../../api/order.api'
-import { useHeaders } from '../../../../hooks/useHeaders'
-import { dateFormat } from '../../../../utils/date.format'
-import AdminLoader from '../../../UI/AdminLoader/AdminLoader'
+import { useGetOrdersQuery } from '@api/order.api'
+import { useHeaders } from '@hooks/useHeaders'
+import { dateFormat } from '@utils/date.format'
+import { AdminLoader } from '@components/UI/AdminUi/index'
 import mainCl from '../tabs.module.scss'
 
 const OrderModel = () => {

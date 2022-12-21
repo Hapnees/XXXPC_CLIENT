@@ -1,8 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import Loader from '../../components/UI/Loader/Loader'
-import { useHeaders } from '../../hooks/useHeaders'
-import { useRegister } from '../../hooks/useRegister'
+import Loader from '@components/UI/Loader/Loader'
+import { useHeaders, useRegister } from '@hooks/index'
 
 const ConfirmPage = () => {
   const params = useParams()

@@ -1,10 +1,9 @@
 import React, { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { useSendEmailMutation } from '../../../api/mail.api'
-import { useRegister } from '../../../hooks/useRegister'
-import AuthField from '../../UI/AuthField/AuthField'
-import Loader from '../../UI/Loader/Loader'
+import { useSendEmailMutation } from '@api/mail.api'
+import { AuthField } from '@components/UI/AdminUi'
+import Loader from '@components/UI/Loader/Loader'
 import { IRegisterForm } from './RegisterForm.interface'
 import cl from './RegisterForm.module.scss'
 

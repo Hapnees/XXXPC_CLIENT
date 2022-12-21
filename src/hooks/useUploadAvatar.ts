@@ -1,11 +1,8 @@
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
-import { useUploadImageMutation } from '../api/media.api'
-import { useUpdateUserMutation } from '../api/user.api'
+import { useUploadImageMutation, useUpdateProfileMutation } from '@api/index'
 import { IUserUpdate } from '../interfaces/user/user-update.interface'
-import { useActions } from './useActions'
-import { useAppSelector } from './useAppSelector'
-import { useHeaders } from './useHeaders'
+import { useActions, useAppSelector, useHeaders } from '@hooks/index'
 
 // Загружаем аватарку, обновляем пользователя и сетаем значения в auth
 export const useUploadAvatar = (avatar: File | undefined) => {
@@ -15,7 +12,7 @@ export const useUploadAvatar = (avatar: File | undefined) => {
   } = useAppSelector(state => state.auth)
   const headers = useHeaders()
   const [uploadAvatar] = useUploadImageMutation()
-  const [updateUser] = useUpdateUserMutation()
+  const [updateUser] = useUpdateProfileMutation()
 
   const result = useCallback(
     (data: IUserUpdate) => {
@@ -25,7 +22,7 @@ export const useUploadAvatar = (avatar: File | undefined) => {
       avatarPath.append('image', avatar, avatar.name)
 
       uploadAvatar({
-        data: { image: avatarPath, userId: id || 0, folder: 'avatar' },
+        data: { image: avatarPath, id: id || 0, folder: 'avatar' },
         headers,
       }).then(response => {
         if (!('data' in response)) return

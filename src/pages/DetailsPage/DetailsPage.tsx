@@ -1,31 +1,44 @@
+import { useGetRepairCardQuery } from '@api/repairCard.api'
+import Loader from '@components/UI/Loader/Loader'
+import { RepairCardSlug } from '@interfaces/adminInterfaces/repair-card-slug.enum'
+import { RepairCardResponse } from '@interfaces/repair/repair-card.interface'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { RepairCardSlug } from '../../interfaces/repair/repair-valid-params.enum'
 import DetailsPagePC from './pages/DetailsPagePC/DetailsPagePC'
 
-const validParams: RepairCardSlug[] = [RepairCardSlug.pc, RepairCardSlug.laptop]
-
 const DetailsPage = () => {
-	const [page, setPage] = useState(<></>)
-	const params = useParams()
-	const navigate = useNavigate()
-	const slug = params.slug
+  const params = useParams()
+  const navigate = useNavigate()
+  const slug = params.slug || ''
 
-	// Проверка параметров на валидность
-	useEffect(() => {
-		if (!(slug && validParams.some(el => el === slug))) {
-			navigate('*')
-			return
-		}
+  const { data: repairCard, isLoading } = useGetRepairCardQuery(slug)
 
-		switch (slug) {
-			case RepairCardSlug.pc:
-				setPage(<DetailsPagePC />)
-				return
-		}
-	}, [params])
+  const currentPage = (currentRepairCard: RepairCardResponse) => {
+    if (!currentRepairCard) return
 
-	return <div className='px-[175px]'>{page}</div>
+    switch (slug) {
+      case RepairCardSlug.PC:
+        return <DetailsPagePC repairCard={currentRepairCard} />
+    }
+  }
+
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        repairCard && (
+          <div className='px-[175px]'>
+            {currentPage(repairCard) ? (
+              currentPage(repairCard)
+            ) : (
+              <>Подробности пока не добавлены!</>
+            )}
+          </div>
+        )
+      )}
+    </>
+  )
 }
 
 export default DetailsPage

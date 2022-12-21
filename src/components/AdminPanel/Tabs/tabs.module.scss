@@ -1,33 +1,10 @@
-.wrapper {
-	@apply flex justify-center mt-12;
-}
-
-.button {
-	@apply flex items-center gap-2 px-2;
-	border-radius: 6px;
-	background-color: #434e62;
-	transition: background-color .3s;
-}
-
-.button__update {
-	@extend .button;
-
-	&:hover {
-		background-color: rgba(146, 146, 0, 0.652)
-	}
-}
-
-.button__create {
-	@extend .button;
-
-	&:hover {
-		background-color: rgba(44, 146, 0, 0.652)
-	}
+.container__menu {
+	max-width: 1900px;
+	overflow: auto;
 }
 
 .top__menu {
 	@apply flex;
-	overflow: auto;
 
 	>li {
 		@apply px-4 py-1;
@@ -38,7 +15,8 @@
 		background-color: #0c0e14;
 		border-left: 1px solid #1a202c;
 
-		&:first-child {
+		&:nth-child(1),
+		&:nth-child(2) {
 			width: 70px;
 		}
 	}
@@ -46,11 +24,10 @@
 
 .menu {
 	@apply flex;
+	transition: background-color .3s;
 
 	>li {
-		@apply px-2 py-2;
 		cursor: pointer;
-		width: 70px;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -63,14 +40,41 @@
 	}
 }
 
-.li__hover {
+.menu__without__inputs {
+	@apply flex;
+	transition: background-color .3s;
+
 	&:hover {
 		background-color: rgba(50, 115, 181, 0.608);
 	}
+
+	>li,
+	>a {
+		@apply relative flex items-center px-2;
+		border: 1px solid #1a202c;
+		transition: background-color .3s;
+		cursor: pointer;
+		white-space: nowrap;
+		// overflow: hidden;
+
+		&:first-child,
+		&:nth-child(2) {
+			@apply justify-center;
+		}
+	}
 }
 
-.zero {
-	padding: 0 !important;
+.checkbox {
+	cursor: pointer;
+}
+
+
+.not_input {
+	padding: 8px !important;
+
+	&:hover {
+		background-color: rgba(50, 115, 181, 0.608);
+	}
 }
 
 .center {
@@ -82,14 +86,14 @@
 }
 
 .special {
-	@apply flex items-center;
+	@apply flex items-center p-2;
 
 	>p {
 		@apply py-[2px] text-center;
 
 
 		&:first-child {
-			background-color: #2d3748;
+			// background-color: #2d3748;
 			border-top-left-radius: 6px;
 			border-bottom-left-radius: 6px;
 			min-width: 25px;
@@ -99,7 +103,7 @@
 		}
 
 		&:nth-child(2) {
-			background-color: #475264;
+			// background-color: #475264;
 			border-top-right-radius: 6px;
 			border-bottom-right-radius: 6px;
 			min-width: 80px;

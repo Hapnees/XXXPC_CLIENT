@@ -11,4 +11,7 @@ export interface UsersGetResponse {
   phone?: string
   updatedAt?: string
   createdAt?: string
+  _count?: {
+    orders: number
+  }
 }

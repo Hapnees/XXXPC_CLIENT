@@ -1,7 +1,7 @@
 import React, { FC, useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import avatar from '../../../assets/img/avatar.jpg'
-import { usernameFormat } from '../../../utils/username.format'
+import avatar from '@assets/img/avatar.jpg'
+import { usernameFormat } from '@utils/username.format'
 import cl from './AuthComponent.module.scss'
 import PopupMenu from './PopupMenu/PopupMenu'
 

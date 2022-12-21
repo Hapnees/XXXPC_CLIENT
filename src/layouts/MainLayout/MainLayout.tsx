@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import Header from '../../components/Header/Header'
-import { useRefreshTokens } from '../../hooks/useRefreshTokens'
+import Header from '@components/Header/Header'
+import { useRefreshTokens } from '@hooks/useRefreshTokens'
 import cl from './MainLayout.module.scss'
 
 const MainLayout = () => {

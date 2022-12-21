@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useRegisterMutation } from '../api/auth.api'
+import { useRegisterMutation } from '@api/auth.api'
 import { useActions } from './useActions'
 
 // Регистрация пользователя

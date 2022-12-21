@@ -1,6 +1,6 @@
 import { UsersGetResponse } from './users-get.interface'
 
-export type AdminUsersGetType = Omit<UsersGetResponse, 'hash'>
+export type AdminUsersGetType = Omit<UsersGetResponse, 'hash' | '_count'>
 
 export interface AdminError {
   id: number

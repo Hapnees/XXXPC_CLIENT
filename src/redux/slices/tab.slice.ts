@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Tabs } from '../../interfaces/tabs.interface'
+import { Tabs } from '@interfaces/tabs.interface'
 
 interface IState {
   currentTab: Tabs

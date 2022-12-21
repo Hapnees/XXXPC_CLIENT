@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import OpenModelForm from '../../components/AdminPanel/Tabs/OpenModel/OpenModelForm'
-import UserModel from '../../components/AdminPanel/Tabs/UserModel/UserModel'
-import { useAppSelector } from '../../hooks/useAppSelector'
-import { useAuth } from '../../hooks/useAuth'
-import { Tabs } from '../../interfaces/tabs.interface'
-import { Roles } from '../../interfaces/roles.interface'
-import RepairCardModel from '../../components/AdminPanel/Tabs/RepairCardModel/RepairCardModel'
-import ServiceModel from '../../components/AdminPanel/Tabs/ServiceModel/ServiceModel'
-import OrderModel from '../../components/AdminPanel/Tabs/OrderModel/OrderModel'
+import OpenModelForm from '@components/AdminPanel/Tabs/OpenModel/OpenModelForm'
+import UserModel from '@components/AdminPanel/Tabs/UserModel/UserModel'
+import RepairCardModel from '@components/AdminPanel/Tabs/RepairCardModel/RepairCardModel'
+import ServiceModel from '@components/AdminPanel/Tabs/ServiceModel/ServiceModel'
+import OrderModel from '@components/AdminPanel/Tabs/OrderModel/OrderModel'
+import { useAppSelector } from '@hooks/useAppSelector'
+import { useAuth } from '@hooks/useAuth'
+import { Tabs } from '@interfaces/tabs.interface'
+import { Roles } from '@interfaces/roles.interface'
+import ModelLayout from '@layouts/ModelLayout/ModelLayout'
 
 const AdminPage = () => {
   const isAuth = useAuth(Roles.ADMIN)
@@ -40,7 +41,7 @@ const AdminPage = () => {
     }
   }, [currentTab])
 
-  return <div>{viewTab}</div>
+  return <ModelLayout>{viewTab}</ModelLayout>
 }
 
 export default AdminPage

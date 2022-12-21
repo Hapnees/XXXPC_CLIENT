@@ -1,15 +1,15 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import OrderTextField from '../../components/UI/OrderTextField/OrderTextField'
+import OrderTextField from '@components/UI/OrderTextField/OrderTextField'
+import Loader from '@components/UI/Loader/Loader'
 import cl from './OrderPage.module.scss'
 import { FiInfo } from 'react-icons/fi'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { IOrderForm } from '../../interfaces/order/order.interface'
-import { useCreateOrderMutation } from '../../api/order.api'
-import { useHeaders } from '../../hooks/useHeaders'
-import { useGetServiceQuery } from '../../api/service.api'
+import { IOrderForm } from '@interfaces/order/order.interface'
+import { useCreateOrderMutation } from '@api/order.api'
+import { useHeaders } from '@hooks/useHeaders'
+import { useGetServiceQuery } from '@api/service.api'
 import { toast } from 'react-toastify'
-import Loader from '../../components/UI/Loader/Loader'
 
 const OrderPage = () => {
   const navigate = useNavigate()

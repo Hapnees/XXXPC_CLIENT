@@ -4,8 +4,23 @@ import { IUserProfile } from '../interfaces/user/user-profile.interface'
 import { IUserUpdate } from '../interfaces/user/user-update.interface'
 import { baseApi } from './baseApi.api'
 
-const userApi = baseApi.injectEndpoints({
+const apiWithTags = baseApi.enhanceEndpoints({ addTagTypes: ['Users'] })
+
+const userApi = apiWithTags.injectEndpoints({
   endpoints: build => ({
+    deleteUsers: build.mutation<
+      { message: string },
+      { body: { ids: number[] }; headers: any }
+    >({
+      query: ({ body, headers }) => ({
+        url: 'user/delete/admin',
+        method: 'DELETE',
+        body,
+        headers,
+      }),
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }],
+    }),
+
     updateUsers: build.mutation<
       { message: string },
       { body: UserUpdateRequest; headers: any }
@@ -16,9 +31,10 @@ const userApi = baseApi.injectEndpoints({
         body,
         headers,
       }),
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }],
     }),
 
-    updateUser: build.mutation<
+    updateProfile: build.mutation<
       { message: string },
       { body: IUserUpdate; headers: any }
     >({
@@ -42,13 +58,15 @@ const userApi = baseApi.injectEndpoints({
         url: 'user/get',
         headers,
       }),
+      providesTags: [{ type: 'Users', id: 'LIST' }],
     }),
   }),
 })
 
 export const {
-  useUpdateUserMutation,
+  useUpdateProfileMutation,
   useLazyGetProfileQuery,
   useGetUsersQuery,
   useUpdateUsersMutation,
+  useDeleteUsersMutation,
 } = userApi

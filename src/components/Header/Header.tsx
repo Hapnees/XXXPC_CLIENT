@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
-import { useAppSelector } from '../../hooks/useAppSelector'
-import { useAuth } from '../../hooks/useAuth'
+import { useAppSelector, useAuth } from '@hooks/index'
 import AuthForm from '../AuthForms/AuthForm'
-import SpecialButton from '../UI/SpecialButton/SpecialButton'
+import SpecialButton from '@components/UI/SpecialButton/SpecialButton'
 import AuthComponent from './AuthComponent/AuthComponent'
 import cl from './Header.module.scss'
 

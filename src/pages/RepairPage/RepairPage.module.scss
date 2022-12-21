@@ -1,21 +1,10 @@
 .top__title {
-	@apply text-[23px];
+	font-size: 23px
 }
 
 .menu {
-	@apply inline-grid grid-cols-4;
+	@apply inline-grid justify-center;
+	grid-template-columns: repeat(4, auto);
 	grid-column-gap: 20px;
 	grid-row-gap: 40px;
-
-	>li {
-		@apply flex flex-col items-center pb-4;
-		width: 400px;
-		color: #e4a6db;
-		background-color: #923d8520;
-		box-shadow: 0 0 5px #f252da;
-
-		border: 1px solid #ffdffa;
-		border-radius: 10px;
-		border-color: #c672b9;
-	}
 }

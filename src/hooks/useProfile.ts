@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { UseFormSetValue } from 'react-hook-form'
-import { useLazyGetProfileQuery } from '../api/user.api'
-import { IUserProfile } from '../interfaces/user/user-profile.interface'
-import { IUserUpdate } from '../interfaces/user/user-update.interface'
+import { useLazyGetProfileQuery } from '@api/user.api'
+import { IUserProfile, IUserUpdate } from '../interfaces/user/index'
 import { useHeaders } from './useHeaders'
 
 // Получаем данные о пользователе и заполняем ими поля при загрузке страницы

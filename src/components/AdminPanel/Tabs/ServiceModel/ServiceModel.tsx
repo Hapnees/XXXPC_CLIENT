@@ -1,10 +1,9 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useGetServicesQuery } from '../../../../api/service.api'
-import { useHeaders } from '../../../../hooks/useHeaders'
-import { Roles } from '../../../../interfaces/roles.interface'
-import { dateFormat } from '../../../../utils/date.format'
-import { pricesFormat } from '../../../../utils/prices.format'
-import AdminLoader from '../../../UI/AdminLoader/AdminLoader'
+import { useGetServicesQuery } from '@api/service.api'
+import { useHeaders } from '@hooks/useHeaders'
+import { dateFormat } from '@utils/date.format'
+import { pricesFormat } from '@utils/prices.format'
+import { AdminLoader } from '@components/UI/AdminUi'
 import mainCl from '../tabs.module.scss'
 
 const ServiceModel = () => {

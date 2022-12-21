@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
-import { useUpdateUserMutation } from '../api/user.api'
-import { IUserUpdate } from '../interfaces/user/user-update.interface'
-import { useActions } from './useActions'
-import { useAppSelector } from './useAppSelector'
-import { useHeaders } from './useHeaders'
-import { useUploadAvatar } from './useUploadAvatar'
+import { useUpdateProfileMutation } from '@api/user.api'
+import { IUserUpdate } from '@interfaces/user/user-update.interface'
+import {
+  useActions,
+  useAppSelector,
+  useHeaders,
+  useUploadAvatar,
+} from '@hooks/index'
 
 // Обновляем пользователя
 export const useUpdateUser = (avatar: File | undefined) => {
@@ -15,7 +17,7 @@ export const useUpdateUser = (avatar: File | undefined) => {
     user: { id },
   } = useAppSelector(state => state.auth)
   const uploadAvatar = useUploadAvatar(avatar)
-  const [updateUser] = useUpdateUserMutation()
+  const [updateUser] = useUpdateProfileMutation()
 
   const temp = useCallback(
     (data: IUserUpdate) => {

@@ -1,35 +1,34 @@
+import { useGetRepairCardsForPageQuery } from '@api/repairCard.api'
+import RepairCard from '@components/RepairCard/RepairCard'
+import Loader from '@components/UI/Loader/Loader'
 import React from 'react'
-import RepairCardLaptop from '../../components/RepairCards/RepairCardLaptop/RepairCardLaptop'
-import RepairCardPC from '../../components/RepairCards/RepairCardPC/RepairCardPC'
-import RepairCardPhoneAndroid from '../../components/RepairCards/RepairCardPhoneAndroid/RepairCardPhoneAndroid'
-import RepairCardRestoreData from '../../components/RepairCards/RepairCardRestoreData/RepairCardRestoreData'
 import cl from './RepairPage.module.scss'
 
 const RepairPage = () => {
-	return (
-		<div className='flex flex-col items-center'>
-			<p className={cl.top__title}>Ремонт компьютерной техники</p>
+  const { data: cards, isLoading } = useGetRepairCardsForPageQuery()
 
-			<div className='mt-6'>
-				<div>
-					<ul className={cl.menu}>
-						<li>
-							<RepairCardPC />
-						</li>
-						<li>
-							<RepairCardLaptop />
-						</li>
-						<li>
-							<RepairCardPhoneAndroid />
-						</li>
-						<li>
-							<RepairCardRestoreData />
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	)
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className='flex flex-col items-center'>
+          <p className={cl.top__title}>Ремонт компьютерной техники</p>
+          <div className='mt-6'>
+            <div>
+              <ul className={cl.menu}>
+                {cards?.map(card => (
+                  <li key={card.id}>
+                    <RepairCard card={card} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }
 
 export default RepairPage

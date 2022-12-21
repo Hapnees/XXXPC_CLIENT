@@ -1,9 +1,6 @@
 import { useEffect } from 'react'
 import { useRefreshTokensMutation } from '../api/auth.api'
-import { useActions } from './useActions'
-import { useAppSelector } from './useAppSelector'
-import { useAuth } from './useAuth'
-import { useHeaders } from './useHeaders'
+import { useActions, useHeaders, useAuth, useAppSelector } from '@hooks/index'
 
 export const useRefreshTokens = () => {
   const { setAuth } = useActions()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import Header from '../../components/AdminPanel/Header/Header'
-import { useRefreshTokens } from '../../hooks/useRefreshTokens'
+import Header from '@components/AdminPanel/Header/Header'
+import { useRefreshTokens } from '@hooks/index'
 
 const AdminPanelLayout = () => {
   useRefreshTokens()

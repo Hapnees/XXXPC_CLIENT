@@ -1,81 +1,119 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useGetRepairCardsQuery } from '../../../../api/repairCard.api'
-import { useHeaders } from '../../../../hooks/useHeaders'
-import { Roles } from '../../../../interfaces/roles.interface'
-import { dateFormat } from '../../../../utils/date.format'
-import AdminLoader from '../../../UI/AdminLoader/AdminLoader'
+import { useAdminGetRepairCardsQuery } from '@api/repairCard.api'
+import { useHeaders } from '@hooks/useHeaders'
+import { AdminLoader } from '@components/UI/AdminUi/index'
 import mainCl from '../tabs.module.scss'
+import { TypeRepairCardModel } from './fields.type'
+import ButtonLine from '@components/UI/AdminUi/ButtonLine/ButtonLine'
+import RepairCardModelRow from './RepairCardModelRow/RepairCardModelRow'
+import RepairCardCreate from './RepairCardCreate/RepairCardCreate'
+import { RepairCardsGetResponse } from '@interfaces/adminInterfaces'
+import ServiceCreate from '../ServiceModel/ServiceCreate/ServiceCreate'
+
+export enum CurrentWindowRCM {
+  LIST = 'LIST',
+  CREATE_MODEL = 'CREATE_MODEL',
+  CREATE_SERVICE = 'CREATE_SERVICE',
+}
 
 const RepairCardModel = () => {
+  const [checkList, setCheckList] = useState<number[]>([])
+
   const headers = useHeaders()
-  const { data: cardsData, isLoading } = useGetRepairCardsQuery(headers)
-  const slugRef = useRef<HTMLLIElement>(null)
+  const {
+    data: cardsData,
+    isLoading,
+    refetch,
+  } = useAdminGetRepairCardsQuery(headers)
+  const checkRef = useRef<HTMLLIElement>(null)
+  const idRef = useRef<HTMLLIElement>(null)
+  const iconRef = useRef<HTMLLIElement>(null)
   const titleRef = useRef<HTMLLIElement>(null)
+  const slugRef = useRef<HTMLLIElement>(null)
   const updatedAtRef = useRef<HTMLLIElement>(null)
   const createdAtRef = useRef<HTMLLIElement>(null)
   const servicesRef = useRef<HTMLLIElement>(null)
 
-  const [widths, setWidths] = useState({
-    slug: 0,
-    title: 0,
-    updatedAt: 0,
-    createdAt: 0,
-    services: 0,
-  })
+  const [currentCard, setCurrentCard] = useState<RepairCardsGetResponse>()
+  const [currentWindow, setCurrentWindow] = useState<CurrentWindowRCM>(
+    CurrentWindowRCM.LIST
+  )
+  const [widths, setWidths] = useState<TypeRepairCardModel>(
+    {} as TypeRepairCardModel
+  )
 
+  const onClickCreate = (event: React.MouseEvent) => {
+    setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
+  }
+
+  const onClickDelete = (event: React.MouseEvent) => {
+    //TODO: сделай кнопку удаления
+  }
+
+  // Сетаем длины элементов
   useLayoutEffect(() => {
     setWidths({
-      slug: slugRef.current?.offsetWidth || 0,
+      check: checkRef.current?.offsetWidth || 0,
+      id: idRef.current?.offsetWidth || 0,
       title: titleRef.current?.offsetWidth || 0,
+      slug: slugRef.current?.offsetWidth || 0,
+      icon: iconRef.current?.offsetWidth || 0,
       updatedAt: updatedAtRef.current?.offsetWidth || 0,
       createdAt: createdAtRef.current?.offsetWidth || 0,
       services: servicesRef.current?.offsetWidth || 0,
     })
-  }, [cardsData])
+  }, [cardsData, currentWindow])
 
   return (
     <>
-      {isLoading ? (
+      {currentWindow === CurrentWindowRCM.CREATE_MODEL ? (
+        <RepairCardCreate
+          id={currentCard?.id || 0}
+          setCurrentWindow={setCurrentWindow}
+          repairCardModelRefetch={refetch}
+        />
+      ) : currentWindow === CurrentWindowRCM.CREATE_SERVICE ? (
+        <ServiceCreate title={currentCard?.title || ''} />
+      ) : isLoading ? (
         <AdminLoader />
       ) : (
-        cardsData && (
-          <div className={mainCl.wrapper}>
-            <div>
-              <ul className={mainCl.top__menu}>
-                <li>№</li>
-                <li ref={slugRef}>Слаг</li>
-                <li ref={titleRef}>Название</li>
-                <li ref={updatedAtRef}>Дата обновления</li>
-                <li ref={createdAtRef}>Дата регистрации</li>
-                <li ref={servicesRef}>Услуги</li>
-              </ul>
-              <ul className={mainCl.content__menu}>
-                {cardsData.map(card => (
-                  <li key={card.id}>
-                    <ul className={mainCl.menu}>
-                      <li>{card.id}</li>
-                      <li style={{ width: widths.slug }}>{card.slug}</li>
-                      <li style={{ width: widths.title }}>{card.title}</li>
-                      <li style={{ width: widths.updatedAt }}>
-                        {dateFormat(card.updatedAt, { withTime: true })}
-                      </li>
-                      <li style={{ width: widths.createdAt }}>
-                        {dateFormat(card.createdAt, { withTime: true })}
-                      </li>
-                      <li
-                        className={mainCl.special}
-                        style={{ width: widths.services }}
-                      >
-                        <p>{card._count.services}</p>
-                        <p>Услуги</p>
-                      </li>
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <form>
+          <div className='mb-2'>
+            <ButtonLine
+              title='Карточки ремонта'
+              onClickCreate={onClickCreate}
+              onClickDelete={onClickDelete}
+            />
           </div>
-        )
+          <div className={mainCl.container__menu}>
+            <ul className={mainCl.top__menu}>
+              <li ref={checkRef}>C</li>
+              <li ref={idRef}>№</li>
+              <li ref={titleRef}>Название</li>
+              <li ref={slugRef}>Слаг</li>
+              <li ref={iconRef}>Иконка</li>
+              <li ref={updatedAtRef}>Дата обновления</li>
+              <li ref={createdAtRef}>Дата регистрации</li>
+              <li ref={servicesRef}>Услуги</li>
+            </ul>
+            <ul className={mainCl.content__menu}>
+              {cardsData?.map(card => (
+                <li key={card.id}>
+                  <RepairCardModelRow
+                    setCurrentCard={setCurrentCard}
+                    viewCreateWindow={() =>
+                      setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
+                    }
+                    card={card}
+                    widths={widths}
+                    checkList={checkList}
+                    setCheckList={setCheckList}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </form>
       )}
     </>
   )

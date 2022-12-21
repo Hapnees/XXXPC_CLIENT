@@ -1,11 +1,9 @@
-import React from 'react'
-import DetailPriceList from '../../../../components/DetailPriceList/DetailPriceList'
-import RepairCardMenu from '../../../../components/RepairCardMenu/RepairCardMenu'
+import React, { FC } from 'react'
+import DetailPriceList from '@components/DetailPriceList/DetailPriceList'
+import RepairCardMenu from '@components/RepairCardMenu/RepairCardMenu'
+import DetailsLayout from '@layouts/DetailsLayout/DetailsLayout'
 import { deffects } from './menus'
-import DetailsLayout from '../../../../layouts/DetailsLayout/DetailsLayout'
-import { useGetRepairCardQuery } from '../../../../api/repairCard.api'
-import { RepairCardSlug } from '../../../../interfaces/repair/repair-valid-params.enum'
-import Loader from '../../../../components/UI/Loader/Loader'
+import { RepairCardResponse } from '@interfaces/repair/repair-card.interface'
 
 const title = 'Ремонт компьютеров и их комплектующих'
 const body = (
@@ -27,28 +25,25 @@ const body = (
   </p>
 )
 
+//FIXME: РЕВОРК КАРТОЧЕК РЕМОНТА И СТРАНИЦ ДЕТАЛЕЙ!!!
+//FIXME: НУЖНО ВСЁ ПЕРЕДЕЛАТЬ!!!
+
 const repairCardMenuTitle = 'Виды неисправностей'
 
-const DetailsPagePC = () => {
-  const { data: repairCard, isLoading } = useGetRepairCardQuery(
-    RepairCardSlug.pc
-  )
+interface IProrps {
+  repairCard: RepairCardResponse
+}
 
+const DetailsPagePC: FC<IProrps> = ({ repairCard }) => {
   return (
-    <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        repairCard && (
-          <DetailsLayout title={title} body={body} img=''>
-            <DetailPriceList services={repairCard.services} />
+    repairCard && (
+      <DetailsLayout title={title} body={body} img=''>
+        <DetailPriceList services={repairCard.services} />
 
-            <RepairCardMenu title={repairCardMenuTitle} array={deffects} />
-            <div className='mb-[250px]'></div>
-          </DetailsLayout>
-        )
-      )}
-    </>
+        <RepairCardMenu title={repairCardMenuTitle} array={deffects} />
+        <div className='mb-[250px]'></div>
+      </DetailsLayout>
+    )
   )
 }
 

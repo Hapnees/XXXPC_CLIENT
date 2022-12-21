@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import { useGetOrderByUserQuery } from '../../api/order.api'
-import Loader from '../../components/UI/Loader/Loader'
-import { useHeaders } from '../../hooks/useHeaders'
-import { dateFormat } from '../../utils/date.format'
+import { useGetOrderByUserQuery } from '@api/order.api'
+import Loader from '@components/UI/Loader/Loader'
+import { useHeaders } from '@hooks/index'
+import { dateFormat } from '@utils/index'
 import cl from './MyOrdersPage.module.scss'
 
 const MyOrdersPage = () => {

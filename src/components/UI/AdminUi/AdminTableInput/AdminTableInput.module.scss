@@ -1,0 +1,11 @@
+.wrapper {
+	overflow: hidden;
+	transition: background-color .3s;
+}
+
+.input {
+	@apply p-2;
+	height: 100%;
+	background-color: transparent;
+
+}

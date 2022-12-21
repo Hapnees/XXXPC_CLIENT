@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Roles } from '../../interfaces/roles.interface'
+import { Roles } from '@interfaces/roles.interface'
 
 interface IState {
   user: {

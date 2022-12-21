@@ -3,8 +3,8 @@ import { IoIosArrowDropdown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { CSSTransition } from 'react-transition-group'
-import { useAuth } from '../../hooks/useAuth'
-import { ISerivce } from '../../interfaces/repair/service.interface'
+import { useAuth } from '@hooks/useAuth'
+import { ISerivce } from '@interfaces/repair/service.interface'
 import cl from './DetailPriceList.module.scss'
 
 interface IProps {
