@@ -70,6 +70,14 @@ const RepairCardCreate: FC<IProps> = ({
   const [menuId, setMenuId] = useState(0)
   const [isOpenEdit, setIsOpenEdit] = useState(false)
 
+  const createCard = useCreateCard(icon, refetch, repairCardModelRefetch)
+  const updateCard = useUpdateCard(
+    cardData,
+    icon,
+    refetch,
+    repairCardModelRefetch
+  )
+
   // Сетаем полученные данные
   useEffect(() => {
     if (!cardData) return
@@ -110,11 +118,11 @@ const RepairCardCreate: FC<IProps> = ({
     repairCard.menus = makeMenusForRequest(repairCard)
 
     if (isEdit) {
-      useUpdateCard(repairCard, cardData, icon, refetch, repairCardModelRefetch)
+      updateCard(repairCard)
       return
     }
 
-    useCreateCard(repairCard, icon, refetch, repairCardModelRefetch)
+    createCard(repairCard)
   }
 
   return (
