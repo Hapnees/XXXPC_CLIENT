@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGetOrderByUserQuery } from '@api/order.api'
 import Loader from '@components/UI/Loader/Loader'
 import { useHeaders } from '@hooks/index'
@@ -8,6 +8,11 @@ import {
   OrderStatus,
   OrderStatusView,
 } from '@interfaces/adminInterfaces/order-status.enum'
+import ModalWindow from '@components/UI/ModalWindow/ModalWindow'
+import MyOrderDetails from '@components/MyOrderDetails/MyOrderDetails'
+import { CSSTransition } from 'react-transition-group'
+import { isDataView } from 'util/types'
+import { OrderGetResponse } from '@interfaces/order/order-get-response.interface'
 
 const MyOrdersPage = () => {
   const headers = useHeaders()
@@ -17,6 +22,10 @@ const MyOrdersPage = () => {
     refetch,
   } = useGetOrderByUserQuery(headers)
 
+  const [isDetailsView, setIsDetailsView] = useState(false)
+  const [currentOrder, setCurrentOrder] = useState<OrderGetResponse>()
+
+  //FIXME: Мааааленький костыль
   useEffect(() => {
     refetch()
   }, [])
@@ -42,7 +51,13 @@ const MyOrdersPage = () => {
             orderData && (
               <ul className={cl.menu}>
                 {orderData.map(order => (
-                  <li key={order.id}>
+                  <li
+                    key={order.id}
+                    onClick={() => {
+                      setCurrentOrder(order)
+                      setIsDetailsView(true)
+                    }}
+                  >
                     <div className={cl.service__menu}>
                       <p className={cl.service}>{order.service.title}</p>
                       <div className={cl.price__values}>
@@ -89,6 +104,21 @@ const MyOrdersPage = () => {
           )}
         </div>
       </div>
+      <CSSTransition
+        in={isDetailsView}
+        timeout={300}
+        classNames='popup'
+        unmountOnExit
+      >
+        <ModalWindow>
+          {currentOrder && (
+            <MyOrderDetails
+              toBack={() => setIsDetailsView(false)}
+              order={currentOrder}
+            />
+          )}
+        </ModalWindow>
+      </CSSTransition>
     </div>
   )
 }

@@ -9,6 +9,13 @@ const baseApiWithTags = baseApi.enhanceEndpoints({ addTagTypes: ['Orders'] })
 
 export const orderApi = baseApiWithTags.injectEndpoints({
   endpoints: build => ({
+    getNote: build.query<{ note: string }, number>({
+      query: id => ({
+        url: 'order/get/note',
+        params: { id },
+      }),
+    }),
+
     orderDelete: build.mutation<
       { message: string },
       { body: number[]; headers: any }
@@ -72,4 +79,5 @@ export const {
   useGetOrdersQuery,
   useOrderUpdateMutation,
   useOrderDeleteMutation,
+  useGetNoteQuery,
 } = orderApi
