@@ -22,7 +22,13 @@ const OrderPage = () => {
   const { register, handleSubmit } = useForm<IOrderForm>()
 
   const onSubmit: SubmitHandler<IOrderForm> = async data => {
+    if (!serviceData) {
+      toast.error('Услуга не найдена')
+      return
+    }
+
     data.serviceId = serviceId
+    data.prices = serviceData.prices
     createOrder({ body: data, headers })
     toast.success('Ваш заказ принят!')
     navigate('/orders')

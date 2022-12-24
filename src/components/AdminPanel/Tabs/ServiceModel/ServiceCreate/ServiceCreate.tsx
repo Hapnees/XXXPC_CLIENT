@@ -1,17 +1,20 @@
 import React, { FC } from 'react'
+import ServiceModel from '../ServiceModel'
 
 interface IProps {
   title: string
+  repairCardId: number
+  toBack: () => void
 }
 
-const ServiceCreate: FC<IProps> = ({ title }) => {
+const ServiceCreate: FC<IProps> = ({ title, repairCardId, toBack }) => {
   return (
     <div>
-      <p className='text-[30px]'>
-        Услуги карточки <span className='text-[#7DD3FC]'>{title}</span>
-      </p>
+      <p className='text-[30px] text-[#7DD3FC] mb-4'>{title}</p>
 
-      <div></div>
+      <div>
+        <ServiceModel repairCardId={repairCardId} toBack={toBack} />
+      </div>
     </div>
   )
 }

@@ -4,9 +4,6 @@ import { toast } from 'react-toastify'
 import { useHeaders } from '@hooks/useHeaders'
 import { AdminLoader } from '@components/UI/AdminUi'
 import mainCl from '../tabs.module.scss'
-import { IoMdCreate } from 'react-icons/io'
-import { BsPlusLg } from 'react-icons/bs'
-import { FaMinus } from 'react-icons/fa'
 import { checkNewUsers } from './checkNewUsers'
 import UserModelRow from './UserModelRow/UserModelRow'
 import { UserModelWidths } from './fields.type'
@@ -19,7 +16,12 @@ import {
   useUpdateUsersMutation,
 } from '@api/user.api'
 import { Roles, RolesResponse } from '@interfaces/roles.interface'
-import ButtonLine from '@components/UI/AdminUi/ButtonLine/ButtonLine'
+import {
+  CreateButton,
+  DeleteButton,
+  UpdateButton,
+} from '@components/UI/AdminUi/Buttons'
+import OrderModel from '../OrderModel/OrderModel'
 
 const UserModel = () => {
   const [deleteUsers, { isLoading: isLoadingDeleteUsers }] =
@@ -36,6 +38,9 @@ const UserModel = () => {
   const [widths, setWidths] = useState<UserModelWidths>({} as UserModelWidths)
 
   const [checkList, setCheckList] = useState<number[]>([])
+
+  const [isViewsOrders, setIsViewOrders] = useState(false)
+  const [currentUser, setCurrentUser] = useState<IUserUpdate>()
 
   const checkRef = useRef<HTMLLIElement>(null)
   const idRef = useRef<HTMLLIElement>(null)
@@ -140,8 +145,7 @@ const UserModel = () => {
       })
   }
 
-  const onClickCreate = (event: React.MouseEvent) => {
-    event.stopPropagation()
+  const onClickCreate = () => {
     const tempId = Math.floor(Math.random() * 99 - 1)
     const newUser = {
       id: tempId,
@@ -153,8 +157,7 @@ const UserModel = () => {
     setValue(`${tempId}.id`, tempId)
   }
 
-  const onClickDelete = (event: React.MouseEvent) => {
-    event.stopPropagation()
+  const onClickDelete = () => {
     // Массив с айди новых созданных пользователей
     const newUsersIds = newUsers.map(el => el.id)
     const idsForRequest = checkList.filter(el => !newUsersIds.includes(el))
@@ -166,18 +169,24 @@ const UserModel = () => {
     setCheckList([])
   }
 
+  const onClickUserOrders = (user: IUserUpdate) => {
+    setCurrentUser(user)
+    setIsViewOrders(true)
+  }
+
   return (
     <>
       {isLoading || isLoadingUpdateUsers || isLoadingDeleteUsers ? (
         <AdminLoader />
+      ) : isViewsOrders ? (
+        <OrderModel userId={currentUser?.id} username={currentUser?.username} />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='mb-2'>
-            <ButtonLine
-              title='Пользователи'
-              onClickCreate={onClickCreate}
-              onClickDelete={onClickDelete}
-            />
+          <div className='flex gap-2 mb-2 ml-2'>
+            <p className='text-[20px]'>Пользователи</p>
+            <UpdateButton />
+            <CreateButton onClickCreate={onClickCreate} />
+            <DeleteButton onClickDelete={onClickDelete} />
           </div>
           <div className={mainCl.container__menu}>
             <ul className={mainCl.top__menu}>
@@ -205,6 +214,7 @@ const UserModel = () => {
                     errors={errors}
                     setCheckList={setCheckList}
                     checkList={checkList}
+                    onClickUserOrders={() => onClickUserOrders(user)}
                   />
                 </li>
               ))}

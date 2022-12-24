@@ -34,12 +34,14 @@ interface IProps {
   id: number
   setCurrentWindow: React.Dispatch<React.SetStateAction<CurrentWindowRCM>>
   repairCardModelRefetch: () => void
+  slugs: RepairCardSlug[]
 }
 
 const RepairCardCreate: FC<IProps> = ({
   id,
   setCurrentWindow,
   repairCardModelRefetch,
+  slugs,
 }) => {
   const headers = useHeaders()
   const isEdit = !!id
@@ -162,13 +164,15 @@ const RepairCardCreate: FC<IProps> = ({
                     setSlug(event.target.value as RepairCardSlug)
                   }
                 >
-                  {selectData?.map((opt, idx) => (
-                    <option
-                      key={idx}
-                      value={opt.value}
-                      label={opt.label}
-                    ></option>
-                  ))}
+                  {selectData
+                    ?.filter(el => !slugs.includes(el.value))
+                    .map((opt, idx) => (
+                      <option
+                        key={idx}
+                        value={opt.value}
+                        label={opt.label}
+                      ></option>
+                    ))}
                 </select>
 
                 <input

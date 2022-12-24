@@ -1,14 +1,18 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useAdminGetRepairCardsQuery } from '@api/repairCard.api'
+import {
+  useAdminDeleteRepairCardMutation,
+  useAdminGetRepairCardsQuery,
+} from '@api/repairCard.api'
 import { useHeaders } from '@hooks/useHeaders'
 import { AdminLoader } from '@components/UI/AdminUi/index'
 import mainCl from '../tabs.module.scss'
 import { TypeRepairCardModel } from './fields.type'
-import ButtonLine from '@components/UI/AdminUi/ButtonLine/ButtonLine'
 import RepairCardModelRow from './RepairCardModelRow/RepairCardModelRow'
 import RepairCardCreate from './RepairCardCreate/RepairCardCreate'
 import { RepairCardsGetResponse } from '@interfaces/adminInterfaces'
 import ServiceCreate from '../ServiceModel/ServiceCreate/ServiceCreate'
+import { CreateButton, DeleteButton } from '@components/UI/AdminUi/Buttons'
+import { toast } from 'react-toastify'
 
 export enum CurrentWindowRCM {
   LIST = 'LIST',
@@ -20,11 +24,16 @@ const RepairCardModel = () => {
   const [checkList, setCheckList] = useState<number[]>([])
 
   const headers = useHeaders()
+  const [deleteCard] = useAdminDeleteRepairCardMutation()
+
   const {
     data: cardsData,
     isLoading,
     refetch,
   } = useAdminGetRepairCardsQuery(headers)
+
+  const slugs = cardsData?.map(el => el.slug)
+
   const checkRef = useRef<HTMLLIElement>(null)
   const idRef = useRef<HTMLLIElement>(null)
   const iconRef = useRef<HTMLLIElement>(null)
@@ -42,12 +51,15 @@ const RepairCardModel = () => {
     {} as TypeRepairCardModel
   )
 
-  const onClickCreate = (event: React.MouseEvent) => {
+  const onClickCreate = () => {
     setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
+    setCurrentCard(undefined)
   }
 
-  const onClickDelete = (event: React.MouseEvent) => {
-    //TODO: сделай кнопку удаления
+  const onClickDelete = () => {
+    deleteCard({ body: checkList, headers })
+      .unwrap()
+      .then(response => toast.success(response.message))
   }
 
   // Сетаем длины элементов
@@ -71,19 +83,22 @@ const RepairCardModel = () => {
           id={currentCard?.id || 0}
           setCurrentWindow={setCurrentWindow}
           repairCardModelRefetch={refetch}
+          slugs={slugs || []}
         />
       ) : currentWindow === CurrentWindowRCM.CREATE_SERVICE ? (
-        <ServiceCreate title={currentCard?.title || ''} />
+        <ServiceCreate
+          title={currentCard?.title || ''}
+          repairCardId={currentCard?.id || 0}
+          toBack={() => setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)}
+        />
       ) : isLoading ? (
         <AdminLoader />
       ) : (
-        <form>
-          <div className='mb-2'>
-            <ButtonLine
-              title='Карточки ремонта'
-              onClickCreate={onClickCreate}
-              onClickDelete={onClickDelete}
-            />
+        <div>
+          <div className='flex gap-2 mb-2 ml-2'>
+            <p className='text-[20px]'>Карточки ремонта</p>
+            <CreateButton onClickCreate={onClickCreate} />
+            <DeleteButton onClickDelete={onClickDelete} />
           </div>
           <div className={mainCl.container__menu}>
             <ul className={mainCl.top__menu}>
@@ -113,7 +128,7 @@ const RepairCardModel = () => {
               ))}
             </ul>
           </div>
-        </form>
+        </div>
       )}
     </>
   )

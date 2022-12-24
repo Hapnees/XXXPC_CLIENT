@@ -15,6 +15,7 @@ interface IProps {
   widths: UserModelWidths
   setCheckList: React.Dispatch<React.SetStateAction<number[]>>
   checkList: number[]
+  onClickUserOrders: () => void
 }
 
 const emailPattern =
@@ -27,6 +28,7 @@ const UserModelRow: FC<IProps> = ({
   widths,
   setCheckList,
   checkList,
+  onClickUserOrders,
 }) => {
   const value = checkList.includes(user.id)
 
@@ -44,7 +46,7 @@ const UserModelRow: FC<IProps> = ({
       <ul
         className={mainCl.menu}
         style={{
-          backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : 'transparent',
+          backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : '',
         }}
       >
         <li
@@ -59,7 +61,7 @@ const UserModelRow: FC<IProps> = ({
             onChange={onChangeCheck}
           />
         </li>
-        <li style={{ width: 70 }}>
+        <li style={{ width: widths.id }}>
           <AdminTableInput
             type='text'
             placeholder='№'
@@ -150,6 +152,7 @@ const UserModelRow: FC<IProps> = ({
             width: widths.orders,
           }}
           className={mainCl.special}
+          onClick={onClickUserOrders}
         >
           <p
             style={{

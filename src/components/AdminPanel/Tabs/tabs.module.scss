@@ -18,6 +18,7 @@
 		&:nth-child(1),
 		&:nth-child(2) {
 			width: 70px;
+			text-align: center
 		}
 	}
 }
@@ -50,12 +51,11 @@
 
 	>li,
 	>a {
-		@apply relative flex items-center px-2;
+		@apply relative flex items-center px-2 py-2;
 		border: 1px solid #1a202c;
 		transition: background-color .3s;
 		cursor: pointer;
 		white-space: nowrap;
-		// overflow: hidden;
 
 		&:first-child,
 		&:nth-child(2) {
@@ -91,15 +91,14 @@
 	>p {
 		@apply py-[2px] text-center;
 
-
 		&:first-child {
-			// background-color: #2d3748;
 			border-top-left-radius: 6px;
 			border-bottom-left-radius: 6px;
 			min-width: 25px;
 			max-width: 40px;
 			overflow: hidden;
 			text-overflow: ellipsis;
+
 		}
 
 		&:nth-child(2) {

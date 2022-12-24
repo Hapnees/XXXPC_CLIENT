@@ -1,22 +1,53 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useGetServicesQuery } from '@api/service.api'
+import React, { FC, useLayoutEffect, useRef, useState } from 'react'
+import {
+  useDeleteServicesMutation,
+  useGetServicesQuery,
+} from '@api/service.api'
 import { useHeaders } from '@hooks/useHeaders'
-import { dateFormat } from '@utils/date.format'
-import { pricesFormat } from '@utils/prices.format'
-import { AdminLoader } from '@components/UI/AdminUi'
 import mainCl from '../tabs.module.scss'
+import ServiceModelRow from './ServiceModelRow/ServiceModelRow'
+import { toast } from 'react-toastify'
+import { AdminLoader } from '@components/UI/AdminUi'
+import { ServiceGetResponse } from '@interfaces/adminInterfaces'
+import { CreateButton, DeleteButton } from '@components/UI/AdminUi/Buttons'
+import BackButton from '@components/UI/AdminUi/Buttons/BackButton/BackButton'
+import { CSSTransition } from 'react-transition-group'
+import ModalWindow from '@components/UI/ModalWindow/ModalWindow'
+import ServiceCreateWindow from './ServiceCreate/ServiceCreateWindow/ServiceCreateWindow'
 
-const ServiceModel = () => {
+interface IProps {
+  repairCardId?: number
+  setCurrentService?: React.Dispatch<
+    React.SetStateAction<ServiceGetResponse | undefined>
+  >
+  toBack?: () => void
+}
+
+const ServiceModel: FC<IProps> = ({ repairCardId, toBack }) => {
+  const [currentService, setCurrentService] = useState<ServiceGetResponse>()
+  const [isViewCreateWindow, setIsViewCreateWindow] = useState(false)
+
   const headers = useHeaders()
-  const { data: serviceData, isLoading } = useGetServicesQuery(headers)
+  const { data: serviceData, isLoading } = useGetServicesQuery({
+    id: repairCardId,
+    headers,
+  })
 
+  const [deleteServices] = useDeleteServicesMutation()
+
+  const checkRef = useRef<HTMLLIElement>(null)
+  const idRef = useRef<HTMLLIElement>(null)
   const titleRef = useRef<HTMLLIElement>(null)
   const pricesRef = useRef<HTMLLIElement>(null)
   const updatedAtRef = useRef<HTMLLIElement>(null)
   const createdAtRef = useRef<HTMLLIElement>(null)
   const ordersRef = useRef<HTMLLIElement>(null)
 
+  const [checkList, setCheckList] = useState<number[]>([])
+
   const [widths, setWidths] = useState({
+    check: 0,
+    id: 0,
     title: 0,
     prices: 0,
     updatedAt: 0,
@@ -26,6 +57,8 @@ const ServiceModel = () => {
 
   useLayoutEffect(() => {
     setWidths({
+      check: checkRef.current?.offsetWidth || 0,
+      id: idRef.current?.offsetWidth || 0,
       title: titleRef.current?.offsetWidth || 0,
       prices: pricesRef.current?.offsetWidth || 0,
       updatedAt: updatedAtRef.current?.offsetWidth || 0,
@@ -34,51 +67,79 @@ const ServiceModel = () => {
     })
   }, [serviceData])
 
+  const onClickDelete = () => {
+    deleteServices({ body: checkList, headers })
+      .unwrap()
+      .then(response => toast.success(response.message))
+  }
+
   return (
     <>
       {isLoading ? (
         <AdminLoader />
       ) : (
-        serviceData && (
-          <div className={mainCl.wrapper}>
-            <div>
-              <ul className={mainCl.top__menu}>
-                <li>№</li>
-                <li ref={titleRef}>Название</li>
-                <li ref={pricesRef}>Цены</li>
-                <li ref={updatedAtRef}>Дата обновления</li>
-                <li ref={createdAtRef}>Дата регистрации</li>
-                <li ref={ordersRef}>Заказы</li>
-              </ul>
-              <ul className={mainCl.content__menu}>
-                {serviceData.map(service => (
-                  <li key={service.id}>
-                    <ul className={mainCl.menu}>
-                      <li>{service.id}</li>
-                      <li style={{ width: widths.title }}>{service.title}</li>
-                      <li style={{ width: widths.prices }}>
-                        {pricesFormat(service.prices)}
-                      </li>
-                      <li style={{ width: widths.updatedAt }}>
-                        {dateFormat(service.updatedAt, { withTime: true })}
-                      </li>
-                      <li style={{ width: widths.createdAt }}>
-                        {dateFormat(service.createdAt, { withTime: true })}
-                      </li>
-                      <li
-                        className={mainCl.special}
-                        style={{ width: widths.orders }}
-                      >
-                        <p>{service._count.Order}</p>
-                        <p>Заказы</p>
-                      </li>
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div>
+          <div className='flex gap-2 mb-2 ml-2'>
+            <p className='text-[20px]'>Услуги</p>
+            {toBack && (
+              <BackButton
+                onClickBack={() => {
+                  toBack()
+                }}
+              />
+            )}
+            <CreateButton
+              onClickCreate={() => {
+                setIsViewCreateWindow(true)
+              }}
+            />
+            <DeleteButton onClickDelete={onClickDelete} />
           </div>
-        )
+          <div className={mainCl.container__menu}>
+            <ul className={mainCl.top__menu}>
+              <li ref={checkRef}>C</li>
+              <li ref={idRef}>№</li>
+              <li ref={titleRef}>Название</li>
+              <li ref={pricesRef}>Цены</li>
+              <li ref={updatedAtRef}>Дата обновления</li>
+              <li ref={createdAtRef}>Дата регистрации</li>
+              <li ref={ordersRef}>Заказы</li>
+            </ul>
+            <ul className={mainCl.content__menu}>
+              {serviceData?.map(service => (
+                <li
+                  key={service.id}
+                  onClick={() => {
+                    setCurrentService(service)
+                    setIsViewCreateWindow(true)
+                  }}
+                >
+                  <ServiceModelRow
+                    service={service}
+                    widths={widths}
+                    checkList={checkList}
+                    setCheckList={setCheckList}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+          <CSSTransition
+            in={isViewCreateWindow}
+            timeout={300}
+            classNames='popup'
+            unmountOnExit
+          >
+            <ModalWindow>
+              <ServiceCreateWindow
+                toClose={() => setIsViewCreateWindow(false)}
+                repairCardId={repairCardId}
+                currentService={currentService}
+                setCurrentService={setCurrentService}
+              />
+            </ModalWindow>
+          </CSSTransition>
+        </div>
       )}
     </>
   )

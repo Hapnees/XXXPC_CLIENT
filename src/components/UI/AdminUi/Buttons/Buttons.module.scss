@@ -28,3 +28,11 @@
 		background-color: rgba(185, 34, 0, 0.652)
 	}
 }
+
+.button__back {
+	@extend .button;
+
+	&:hover {
+		background-color: rgba(185, 166, 0, 0.652)
+	}
+}
