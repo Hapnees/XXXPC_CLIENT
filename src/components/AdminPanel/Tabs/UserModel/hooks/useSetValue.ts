@@ -1,10 +1,8 @@
-import {
-  IUserUpdate,
-  UsersGetResponse,
-} from '@interfaces/adminInterfaces/index'
+import { IUserUpdate, UsersGetResponse } from '@interfaces/adminInterfaces/user'
 import { UseFormSetValue } from 'react-hook-form'
 import { useEffect } from 'react'
-import { rolesConvert, dateFormat } from '@utils/index'
+import { dateFormat } from '@utils/index'
+import { RolesView } from '@interfaces/roles.interface'
 
 export const useSetValue = (
   setValue: UseFormSetValue<IUserUpdate[]>,
@@ -15,9 +13,12 @@ export const useSetValue = (
       setValue(`${el.id}.id`, el.id)
       setValue(`${el.id}.username`, el.username)
       setValue(`${el.id}.email`, el.email)
-      setValue(`${el.id}.roleView`, rolesConvert(el.role))
+      setValue(
+        `${el.id}.roleView`,
+        RolesView[el.role as keyof typeof RolesView]
+      )
       setValue(`${el.id}.password`, el.hash)
-      setValue(`${el.id}.hashedRt`, el.hashedRt)
+      setValue(`${el.id}.isOnline`, el.isOnline)
       setValue(`${el.id}.avatarPath`, el.avatarPath)
       setValue(`${el.id}.phone`, el.phone)
       setValue(

@@ -1,5 +1,5 @@
-import { IRepairCardParagraph } from '@interfaces/adminInterfaces/repair-card-paragraph.interface'
-import React, { FC, useEffect, useState } from 'react'
+import { IRepairCardParagraph } from '@interfaces/adminInterfaces/repair-card'
+import React, { FC, useState } from 'react'
 import { BsGearFill } from 'react-icons/bs'
 import { IoClose } from 'react-icons/io5'
 import ReactTextareaAutosize from 'react-textarea-autosize'
@@ -63,6 +63,7 @@ const Paragraph: FC<IProps> = ({ onClose, id, title, setParagraphs }) => {
         maxRows={2}
         value={title}
         onChange={event => onChangeCurrentTitle(event.target.value)}
+        autoFocus
       />
       <IoClose size={20} onClick={() => onClose(id)} />
     </div>

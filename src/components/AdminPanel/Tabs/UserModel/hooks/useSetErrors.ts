@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-import { UseFormSetError } from 'react-hook-form'
 import {
   AdminError,
   AdminUsersGetType,
-  IUserUpdate,
-} from '@interfaces/adminInterfaces/index'
+} from '@interfaces/adminInterfaces/error.interface'
+import { IUserUpdate } from '@interfaces/adminInterfaces/user'
+import { useEffect } from 'react'
+import { UseFormSetError } from 'react-hook-form'
 
 export const useSetErrors = (
   setError: UseFormSetError<IUserUpdate[]>,

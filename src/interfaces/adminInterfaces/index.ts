@@ -1,6 +1,0 @@
-export * from './error.interface'
-export * from './orders-get.interface'
-export * from './repair-cards-get.interface'
-export * from './service-get.interface'
-export * from './user-update.interface'
-export * from './users-get.interface'

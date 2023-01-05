@@ -2,7 +2,7 @@ import React from 'react'
 import { useActions } from '@hooks/useActions'
 import { useAppSelector } from '@hooks/useAppSelector'
 import { Tabs } from '@interfaces/tabs.interface'
-import Search from '@components/UI/Search/Search'
+import SpecialInput from '@components/UI/AdminUi/AdminSpecialInput/SpecialInput'
 import cl from './OpenModelForm.module.scss'
 
 const OpenModelForm = () => {
@@ -26,7 +26,7 @@ const OpenModelForm = () => {
           <p className='text-[25px] font-semibold tracking-wide text-center'>
             Открыть модель
           </p>
-          <Search placeholder='Поиск' />
+          <SpecialInput placeholder='Поиск' />
         </div>
 
         <div className={cl.container__menu}>

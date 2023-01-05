@@ -3,6 +3,7 @@
 	background-color: #16071428;
 	box-shadow: 0 0 8px #a15b9883;
 	height: 650px;
+	width: 675px;
 }
 
 .menu {
@@ -38,6 +39,8 @@
 	@apply py-2;
 	color: #eeade3;
 	width: 250px;
+	max-height: 430px;
+	overflow: auto;
 	text-align: center;
 	border-right: 1px solid #7b4472;
 }
@@ -46,10 +49,13 @@
 	@apply px-4;
 	color: #ffcdf8;
 	width: 100%;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: auto;
 }
 
 .info {
-	// color: #ffdefc;
 	@apply flex items-center gap-2;
 	color: #98ffe9;
 }

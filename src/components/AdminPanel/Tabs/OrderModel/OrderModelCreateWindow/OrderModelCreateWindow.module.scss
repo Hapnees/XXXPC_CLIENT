@@ -24,6 +24,7 @@
 .select {
 	@apply bg-prisma-blue px-2 py-2;
 	font-size: 18px;
+	text-align: center;
 	cursor: pointer;
 	width: 100%;
 	background-color: #0e1118;
@@ -39,6 +40,15 @@
 	text-align: center;
 	background-color: #0e1118;
 	width: 100%;
+	border: 1px solid #22252a;
+	border-radius: 6px;
+	-moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 .comment__title {

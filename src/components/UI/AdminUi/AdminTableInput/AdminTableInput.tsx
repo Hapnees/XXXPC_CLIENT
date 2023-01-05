@@ -3,7 +3,7 @@ import { IAdminTableField } from './AdminTableInput.interface'
 import cl from './AdminTableInput.module.scss'
 
 export const AdminTableInput = forwardRef<HTMLInputElement, IAdminTableField>(
-  ({ error, width, ...props }, ref) => {
+  ({ error, ...props }, ref) => {
     const [isHover, setIsHover] = useState(false)
     const [isFocus, setIsFocus] = useState(false)
 
@@ -20,20 +20,15 @@ export const AdminTableInput = forwardRef<HTMLInputElement, IAdminTableField>(
           }`,
         }}
       >
-        <div className={cl.container}>
-          <input
-            {...props}
-            ref={ref}
-            className={cl.input}
-            onMouseEnter={() => setIsHover(true)}
-            onMouseLeave={() => setIsHover(false)}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
-            style={{
-              width: width - 3,
-            }}
-          />
-        </div>
+        <input
+          {...props}
+          ref={ref}
+          className={cl.input}
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+        />
       </div>
     )
   }

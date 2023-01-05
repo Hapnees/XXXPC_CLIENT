@@ -1,7 +1,8 @@
-import { UserUpdateRequest } from '../interfaces/adminInterfaces/user-update.interface'
-import { UsersGetResponse } from '../interfaces/adminInterfaces/users-get.interface'
-import { IUserProfile } from '../interfaces/user/user-profile.interface'
-import { IUserUpdate } from '../interfaces/user/user-update.interface'
+import {
+  UserUpdateRequest,
+  UsersGetResponse,
+} from '@interfaces/adminInterfaces/user'
+import { IUserProfile, IUserUpdate } from '../interfaces/user'
 import { baseApi } from './baseApi.api'
 
 const apiWithTags = baseApi.enhanceEndpoints({ addTagTypes: ['Users'] })
@@ -53,9 +54,13 @@ const userApi = apiWithTags.injectEndpoints({
       }),
     }),
 
-    getUsers: build.query<UsersGetResponse[], any>({
-      query: headers => ({
+    getUsers: build.query<
+      { data: UsersGetResponse[]; totalCount: number },
+      { search?: string; limit?: number; page?: number; headers: any }
+    >({
+      query: ({ headers, search, limit = 15, page }) => ({
         url: 'user/get',
+        params: { search, limit, page },
         headers,
       }),
       providesTags: [{ type: 'Users', id: 'LIST' }],
@@ -66,7 +71,7 @@ const userApi = apiWithTags.injectEndpoints({
 export const {
   useUpdateProfileMutation,
   useLazyGetProfileQuery,
-  useGetUsersQuery,
+  useLazyGetUsersQuery,
   useUpdateUsersMutation,
   useDeleteUsersMutation,
 } = userApi

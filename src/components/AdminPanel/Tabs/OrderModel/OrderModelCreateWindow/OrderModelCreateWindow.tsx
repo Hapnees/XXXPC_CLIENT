@@ -1,17 +1,15 @@
 import React, { FC, useState } from 'react'
-import {
-  OrderStatus,
-  OrderStatusView,
-} from '@interfaces/adminInterfaces/order-status.enum'
 import { IoClose } from 'react-icons/io5'
 import cl from './OrderModelCreateWindow.module.scss'
-import { OrdersGetResponse } from '@interfaces/adminInterfaces'
 import { useOrderUpdateMutation } from '@api/order.api'
-import { IOrderUpdate } from '@interfaces/adminInterfaces/order-update.interface'
 import { useHeaders } from '@hooks/useHeaders'
-import { toast } from 'react-toastify'
-import Search from '@components/UI/Search/Search'
-import { CSSTransition } from 'react-transition-group'
+import {
+  IOrderUpdate,
+  OrdersGetResponse,
+  OrderStatus,
+  OrderStatusView,
+} from '@interfaces/adminInterfaces/order'
+import customToast from '@utils/customToast'
 
 const selectData = [
   { value: OrderStatus.PENDING, label: OrderStatusView.PENDING },
@@ -35,16 +33,14 @@ const OrderModelCreateWindow: FC<IProps> = ({ order, username, toClose }) => {
   const [isViewNote, setIsViewNote] = useState(false)
   const [note, setNote] = useState(order.note || '')
 
-  const [price, setPrice] = useState(
-    order.prices?.length === 1 ? order.prices[0] : ''
-  )
+  const [price, setPrice] = useState(order.price || '')
 
   const onClickUpdate = () => {
     const data: IOrderUpdate = {
       id: order.id,
       status,
       note,
-      prices: [price],
+      prices: [parseInt(price.toString())],
     }
 
     if (!price) delete data.prices
@@ -52,7 +48,7 @@ const OrderModelCreateWindow: FC<IProps> = ({ order, username, toClose }) => {
     updateOrder({ body: data, headers })
       .unwrap()
       .then(response => {
-        toast.success(response.message)
+        customToast.success(response.message)
         toClose()
       })
   }
@@ -95,13 +91,16 @@ const OrderModelCreateWindow: FC<IProps> = ({ order, username, toClose }) => {
               <option key={idx} value={el.value} label={el.label}></option>
             ))}
           </select>
-          <input
-            type='text'
-            placeholder='Цена'
-            className={cl.input}
-            value={price}
-            onChange={event => setPrice(event.target.value)}
-          />
+          <div className='flex items-center gap-2'>
+            <input
+              type='text'
+              placeholder='Цена'
+              className={cl.input}
+              value={price}
+              onChange={event => setPrice(event.target.value)}
+            />
+            <p className='text-[18px]'>руб</p>
+          </div>
           <div className='w-full'>
             <p className={cl.comment__title}>Комментарий</p>
             <p className={cl.comment}>{order.comment}</p>

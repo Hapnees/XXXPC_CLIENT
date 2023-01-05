@@ -6,22 +6,19 @@ import MenuCreate from '../MenuCreate/MenuCreate'
 import MenuElement from './MenuElement/MenuElement'
 import { BsArrowRight } from 'react-icons/bs'
 import { BsGearFill } from 'react-icons/bs'
-import { IRepairCardMenu } from '@interfaces/adminInterfaces/repair-card-menu.interface'
-import {
-  useAdminCreateRepairCardMutation,
-  useAdminGetRepairCardDetailsQuery,
-} from '@api/repairCard.api'
+import { useAdminGetRepairCardDetailsQuery } from '@api/repairCard.api'
 import { useHeaders } from '@hooks/useHeaders'
-import { IRepairCardCreate } from '@interfaces/adminInterfaces/repair-card-create.interface'
 import { AdminLoader } from '@components/UI/AdminUi'
-import {
-  RepairCardSlug,
-  RepairCardSlugView,
-} from '@interfaces/adminInterfaces/repair-card-slug.enum'
 import { changeIcon, clickDeleteMenu, makeMenusForRequest } from './utils'
 import { useUpdateCard } from './hooks/useUpdateCard'
 import { useCreateCard } from './hooks/useCreateCard'
 import { CurrentWindowRCM } from '../RepairCardModel'
+import {
+  IRepairCardCreate,
+  IRepairCardMenu,
+  RepairCardSlug,
+  RepairCardSlugView,
+} from '@interfaces/adminInterfaces/repair-card'
 
 // Данные для селектора слагов
 const selectData = [
@@ -34,7 +31,10 @@ interface IProps {
   id: number
   setCurrentWindow: React.Dispatch<React.SetStateAction<CurrentWindowRCM>>
   repairCardModelRefetch: () => void
-  slugs: RepairCardSlug[]
+  slugs: {
+    value: RepairCardSlug
+    label: RepairCardSlugView
+  }[]
 }
 
 const RepairCardCreate: FC<IProps> = ({
@@ -53,7 +53,10 @@ const RepairCardCreate: FC<IProps> = ({
   } = useAdminGetRepairCardDetailsQuery({ id, headers }, { skip: !isEdit })
   const buttonTitle = isEdit ? 'Обновить' : 'Создать'
 
-  const [slug, setSlug] = useState<RepairCardSlug>(RepairCardSlug.PC)
+  const [slug, setSlug] = useState<RepairCardSlug>(
+    selectData.filter(el => !slugs.includes(el))[0].value
+  )
+
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>(
     cardData?.description || ''
@@ -72,7 +75,7 @@ const RepairCardCreate: FC<IProps> = ({
   const [menuId, setMenuId] = useState(0)
   const [isOpenEdit, setIsOpenEdit] = useState(false)
 
-  const createCard = useCreateCard(icon, refetch, repairCardModelRefetch)
+  const createCard = useCreateCard(icon)
   const updateCard = useUpdateCard(
     cardData,
     icon,
@@ -164,15 +167,13 @@ const RepairCardCreate: FC<IProps> = ({
                     setSlug(event.target.value as RepairCardSlug)
                   }
                 >
-                  {selectData
-                    ?.filter(el => !slugs.includes(el.value))
-                    .map((opt, idx) => (
-                      <option
-                        key={idx}
-                        value={opt.value}
-                        label={opt.label}
-                      ></option>
-                    ))}
+                  {slugs.map((opt, idx) => (
+                    <option
+                      key={idx}
+                      value={opt.value}
+                      label={opt.label}
+                    ></option>
+                  ))}
                 </select>
 
                 <input
@@ -244,7 +245,7 @@ const RepairCardCreate: FC<IProps> = ({
                 <div className={cl.body}>
                   <p className={cl.description}>{description}</p>
                   <div>
-                    <ul className='flex flex-col gap-4 h-[300px] overflow-auto px-2'>
+                    <ul className='flex flex-col gap-4 h-[320px] overflow-auto px-2'>
                       {menus?.map(menu => (
                         <li key={menu.id}>
                           <p className='mb-2'>{menu.title}</p>

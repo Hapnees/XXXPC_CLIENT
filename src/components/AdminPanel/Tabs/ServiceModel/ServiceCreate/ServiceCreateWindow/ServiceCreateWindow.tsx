@@ -1,4 +1,4 @@
-import Search from '@components/UI/Search/Search'
+import SpecialInput from '@components/UI/AdminUi/AdminSpecialInput/SpecialInput'
 import React, { FC, useEffect, useState } from 'react'
 import cl from './ServiceCreateWindow.module.scss'
 import { IoClose } from 'react-icons/io5'
@@ -6,16 +6,16 @@ import {
   useCreateServiceMutation,
   useUpdateServiceMutation,
 } from '@api/service.api'
-import { IServiceCreate } from '@interfaces/adminInterfaces/service-create.interface'
+import { IServiceCreate } from '@interfaces/adminInterfaces/service/service-create.interface'
 import { useHeaders } from '@hooks/useHeaders'
-import { toast } from 'react-toastify'
-import { ServiceGetResponse } from '@interfaces/adminInterfaces'
-import { IServiceUpdate } from '@interfaces/adminInterfaces/service.update.interface'
+import { ServiceGetResponse } from '@interfaces/adminInterfaces/service'
+import { IServiceUpdate } from '@interfaces/adminInterfaces/service/service.update.interface'
 import {
   RepairCardSlug,
   RepairCardSlugView,
-} from '@interfaces/adminInterfaces/repair-card-slug.enum'
+} from '@interfaces/adminInterfaces/repair-card/repair-card-slug.enum'
 import { useGetUsedRepairCardSlugsQuery } from '@api/repairCard.api'
+import customToast from '@utils/customToast'
 
 enum Radio {
   ONE = 'ONE',
@@ -66,14 +66,17 @@ const ServiceCreateWindow: FC<IProps> = ({
 
   const [title, setTitle] = useState(currentService?.title || '')
 
-  const [specificPrice, setSpecificPrice] = useState(
+  const [price, setPrice] = useState<string>(
     currentService && currentService.prices.length === 1
-      ? currentService.prices[0]
+      ? currentService.prices[0].toString()
       : ''
   )
   const [range, setRange] = useState<{ min: string; max: string }>(
     currentService && currentService.prices.length === 2
-      ? { min: currentService.prices[0], max: currentService.prices[1] }
+      ? {
+          min: currentService.prices[0].toString(),
+          max: currentService.prices[1].toString(),
+        }
       : {
           min: '',
           max: '',
@@ -84,15 +87,18 @@ const ServiceCreateWindow: FC<IProps> = ({
     event.preventDefault()
 
     if (isEdit) {
+      const intPrice = parseInt(price)
       const data: IServiceUpdate = {
         id: currentService.id,
         title,
-        prices: specificPrice ? [specificPrice] : [range.min, range.max],
+        prices: intPrice
+          ? [intPrice]
+          : [parseInt(range.min), parseInt(range.max)],
       }
       updateService({ body: data, headers })
         .unwrap()
         .then(response => {
-          toast.success(response.message)
+          customToast.success(response.message)
           setCurrentService(undefined)
           toClose()
         })
@@ -101,16 +107,17 @@ const ServiceCreateWindow: FC<IProps> = ({
     }
 
     if (!repairCardId && !usedSlugsData) {
-      toast.error('Карточка не найдена')
+      customToast.error('Карточка не найдена')
       return
     }
 
+    const intPrice = parseInt(price)
     const data: IServiceCreate = {
       title,
-      prices: specificPrice
-        ? [specificPrice]
+      prices: intPrice
+        ? [intPrice]
         : range && range.min && range.max
-        ? [range.min, range.max]
+        ? [parseInt(range.min), parseInt(range.max)]
         : [],
       repairCardId,
       repairCardSlug: currentSlug,
@@ -118,7 +125,7 @@ const ServiceCreateWindow: FC<IProps> = ({
     createService({ body: data, headers })
       .unwrap()
       .then(response => {
-        toast.success(response.message)
+        customToast.success(response.message)
         toClose()
       })
   }
@@ -159,7 +166,7 @@ const ServiceCreateWindow: FC<IProps> = ({
               ))}
           </select>
         )}
-        <Search
+        <SpecialInput
           placeholder='Название услуги'
           value={title}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,7 +198,7 @@ const ServiceCreateWindow: FC<IProps> = ({
             checked={radioVal === Radio.TWO}
             onChange={() => {
               setRadioVal(Radio.TWO)
-              setSpecificPrice('')
+              setPrice('')
             }}
           />
           <label htmlFor={Radio.TWO} className={cl.label}>
@@ -201,39 +208,46 @@ const ServiceCreateWindow: FC<IProps> = ({
 
         <div className='flex flex-col items-center'>
           {radioVal === Radio.ONE ? (
-            <Search
-              className={cl.price}
-              placeholder='Цена'
-              value={specificPrice}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setSpecificPrice(event.target.value)
-              }
-            />
+            <div className='flex items-center gap-3'>
+              <SpecialInput
+                type='text'
+                className={cl.price}
+                placeholder='Цена'
+                value={price}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setPrice(event.target.value)
+                }
+              />
+              <p className={cl.price__wallet}>руб</p>
+            </div>
           ) : (
             radioVal === Radio.TWO && (
-              <div className='flex gap-4'>
-                <Search
-                  className={cl.price}
-                  placeholder='От'
-                  value={range.min}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setRange(prev => ({
-                      ...prev,
-                      min: event.target.value,
-                    }))
-                  }
-                />
-                <Search
-                  className={cl.price}
-                  placeholder='До'
-                  value={range.max}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setRange(prev => ({
-                      ...prev,
-                      max: event.target.value,
-                    }))
-                  }
-                />
+              <div className='flex items-center gap-3'>
+                <div className='flex gap-2'>
+                  <SpecialInput
+                    className={cl.price}
+                    placeholder='От'
+                    value={range.min}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setRange(prev => ({
+                        ...prev,
+                        min: event.target.value,
+                      }))
+                    }
+                  />
+                  <SpecialInput
+                    className={cl.price}
+                    placeholder='До'
+                    value={range.max}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setRange(prev => ({
+                        ...prev,
+                        max: event.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <p className={cl.price__wallet}>руб</p>
               </div>
             )
           )}

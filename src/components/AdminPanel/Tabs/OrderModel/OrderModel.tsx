@@ -1,5 +1,5 @@
-import React, { FC, useLayoutEffect, useRef, useState } from 'react'
-import { useGetOrdersQuery, useOrderDeleteMutation } from '@api/order.api'
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { useLazyGetOrdersQuery, useOrderDeleteMutation } from '@api/order.api'
 import { useHeaders } from '@hooks/useHeaders'
 import { AdminLoader } from '@components/UI/AdminUi/index'
 import mainCl from '../tabs.module.scss'
@@ -9,62 +9,66 @@ import OrderModelRow from './OrderModelRow/OrderModelRow'
 import ModalWindow from '@components/UI/ModalWindow/ModalWindow'
 import { CSSTransition } from 'react-transition-group'
 import OrderModelCreateWindow from './OrderModelCreateWindow/OrderModelCreateWindow'
-import { OrdersGetResponse } from '@interfaces/adminInterfaces'
-import { toast } from 'react-toastify'
+import { OrdersGetResponse } from '@interfaces/adminInterfaces/order'
+import customToast from '@utils/customToast'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
+import AdminFieldsPopup from '@components/AdminPanel/AdminFieldsPopup/AdminFieldsPopup'
+import Pagination from '@components/AdminPanel/Pagination/Pagination'
+import { sortTitles, sortTitlesView } from './OrderModel.interface'
+import { SortDirect } from '@interfaces/order/order-sort.enum'
+import { MdOutlineDoubleArrow } from 'react-icons/md'
+import SearchInputWithButton from '@components/AdminPanel/SearchInputWithButton/SearchInputWithButton'
 
 interface IProps {
   userId?: number
   username?: string
+  toBack?: () => void
 }
 
-const OrderModel: FC<IProps> = ({ userId, username }) => {
+const OrderModel: FC<IProps> = ({ userId, username, toBack }) => {
+  const [sortTitle, setSortTitle] = useState<sortTitles>()
+  const [sortDirect, setSortDirect] = useState<SortDirect>()
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const searchRef = useRef<HTMLInputElement>(null)
   const headers = useHeaders()
-  const { data: ordersData, isLoading } = useGetOrdersQuery({
-    id: userId,
-    headers,
-  })
+  const [getOrders, { data: ordersData, isLoading }] = useLazyGetOrdersQuery()
+
+  const getOrdersWithParams = useCallback(
+    () =>
+      getOrders({
+        id: userId,
+        search: searchRef.current?.value,
+        st: sortTitle,
+        sd: sortDirect,
+        page: currentPage,
+        headers,
+      }),
+    [getOrders]
+  )
 
   const [deleteOrders] = useOrderDeleteMutation()
-
-  const checkRef = useRef<HTMLLIElement>(null)
-  const idRef = useRef<HTMLLIElement>(null)
-  const commentRef = useRef<HTMLLIElement>(null)
-  const statusRef = useRef<HTMLLIElement>(null)
-  const pricesRef = useRef<HTMLLIElement>(null)
-  const updatedAtRef = useRef<HTMLLIElement>(null)
-  const createdAtRef = useRef<HTMLLIElement>(null)
-  const usernameRef = useRef<HTMLLIElement>(null)
-  const serviceTitleRef = useRef<HTMLLIElement>(null)
 
   const [isViewCreateWindow, setIsViewCreateWindow] = useState(false)
   const [currentOrder, setCurrentOrder] = useState<OrdersGetResponse>()
   const [checkList, setCheckList] = useState<number[]>([])
 
-  const [widths, setWidths] = useState({
-    check: 0,
-    id: 0,
-    comment: 0,
-    status: 0,
-    prices: 0,
-    updatedAt: 0,
-    createdAt: 0,
-    username: 0,
-    serviceTitle: 0,
-  })
+  const [checkFields, setCheckFields] = useState<IFieldMenuElement[]>(
+    Object.keys(sortTitles)
+      .map(el => ({ title: el, checked: true }))
+      .map(el => ({
+        ...el,
+        checked:
+          el.title === sortTitles.DATE_CREATED ||
+          el.title === sortTitles.DATE_UPDATED
+            ? false
+            : true,
+      }))
+  )
 
-  useLayoutEffect(() => {
-    setWidths({
-      check: checkRef.current?.offsetWidth || 0,
-      id: idRef.current?.offsetWidth || 0,
-      comment: commentRef.current?.offsetWidth || 0,
-      status: statusRef.current?.offsetWidth || 0,
-      prices: pricesRef.current?.offsetWidth || 0,
-      updatedAt: updatedAtRef.current?.offsetWidth || 0,
-      createdAt: createdAtRef.current?.offsetWidth || 0,
-      username: usernameRef.current?.offsetWidth || 0,
-      serviceTitle: serviceTitleRef.current?.offsetWidth || 0,
-    })
-  }, [ordersData])
+  useEffect(() => {
+    getOrdersWithParams()
+  }, [])
 
   const onClickOrder = (order: OrdersGetResponse) => {
     setIsViewCreateWindow(true)
@@ -74,71 +78,144 @@ const OrderModel: FC<IProps> = ({ userId, username }) => {
   const onClickDelete = () => {
     deleteOrders({ body: checkList, headers })
       .unwrap()
-      .then(response => toast.success(response.message))
+      .then(response => customToast.success(response.message))
   }
 
+  const onKeyDownEnter = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      getOrdersWithParams()
+    }
+  }
+
+  const onClickMenuElement = (title: sortTitles) => {
+    if (title === sortTitle) {
+      setSortTitle(undefined)
+      setSortDirect(undefined)
+    } else if (title === sortTitles.PRICE) {
+      setSortTitle(title)
+      setSortDirect(undefined)
+    }
+  }
+
+  if (isLoading) return <AdminLoader />
+
   return (
-    <>
-      {isLoading ? (
-        <AdminLoader />
-      ) : (
-        <div>
-          {!!username && (
-            <div className='flex gap-2 text-[20px] mb-4 ml-2'>
-              <p>Пользователь</p>
-              <p className='text-[#7DD3FC]'>{username}</p>
-            </div>
-          )}
-          <div className='flex gap-2 mb-2 ml-2'>
-            <p className='text-[20px]'>Заказы</p>
-            <BackButton onClickBack={() => {}} />
-            <DeleteButton onClickDelete={onClickDelete} />
-          </div>
-          <div className={mainCl.container__menu}>
-            <ul className={mainCl.top__menu}>
-              <li ref={checkRef}>C</li>
-              <li ref={idRef}>№</li>
-              <li ref={commentRef}>Комментарий</li>
-              <li ref={statusRef}>Статус</li>
-              <li ref={pricesRef}>Цена</li>
-              <li ref={updatedAtRef}>Дата обновления</li>
-              <li ref={createdAtRef}>Дата регистрации</li>
-              {!userId && <li ref={usernameRef}>Имя заказчика</li>}
-              <li ref={serviceTitleRef}>Название услуги</li>
-            </ul>
-            <ul className={mainCl.content__menu}>
-              {ordersData?.map(order => (
-                <li key={order.id} onClick={() => onClickOrder(order)}>
-                  <OrderModelRow
-                    checkList={checkList}
-                    setCheckList={setCheckList}
-                    userId={userId}
-                    order={order}
-                    widths={widths}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-          <CSSTransition
-            in={isViewCreateWindow}
-            timeout={300}
-            classNames='popup'
-            unmountOnExit
-          >
-            <ModalWindow>
-              {currentOrder && (
-                <OrderModelCreateWindow
-                  order={currentOrder}
-                  username={username}
-                  toClose={() => setIsViewCreateWindow(false)}
-                />
-              )}
-            </ModalWindow>
-          </CSSTransition>
+    <div className={mainCl.wrapper}>
+      {!!username && (
+        <div className='flex gap-2 text-[20px] mb-4 ml-2'>
+          <p>Пользователь</p>
+          <p className='text-[#7DD3FC]'>{username}</p>
         </div>
       )}
-    </>
+      <div className={mainCl.panel}>
+        <div className='flex gap-2'>
+          <p className='text-[20px]'>Заказы</p>
+          {toBack && <BackButton onClickBack={toBack} />}
+          <DeleteButton onClickDelete={onClickDelete} />
+        </div>
+
+        <SearchInputWithButton
+          searchRef={searchRef}
+          onKeyDownEnter={onKeyDownEnter}
+          getDataWithParams={getOrdersWithParams}
+        />
+
+        <AdminFieldsPopup
+          ruFields={sortTitlesView}
+          checkFields={
+            userId
+              ? checkFields.filter(el => el.title !== sortTitles.NAME)
+              : checkFields
+          }
+          setCheckFields={setCheckFields}
+        />
+      </div>
+
+      <div className={mainCl.container__menu}>
+        <ul className={mainCl.top__menu}>
+          {checkFields
+            .filter(el => el.checked)
+            .filter(el => {
+              if (userId) return el.title !== sortTitles.NAME
+              return true
+            })
+            .map((el, idx) => (
+              <li
+                key={idx}
+                onClick={() => onClickMenuElement(el.title as sortTitles)}
+                style={{
+                  backgroundColor: el.title === sortTitle ? '#2d3748' : '',
+                }}
+              >
+                {el.title === sortTitle && (
+                  <MdOutlineDoubleArrow
+                    className={mainCl.arrow__up}
+                    style={{
+                      opacity: sortDirect === SortDirect.UP ? 1 : '',
+                    }}
+                    onClick={event => {
+                      event.stopPropagation()
+                      setSortDirect(SortDirect.UP)
+                    }}
+                  />
+                )}
+                {sortTitlesView[el.title as keyof typeof sortTitlesView]}
+                {el.title === sortTitle && (
+                  <MdOutlineDoubleArrow
+                    className={mainCl.arrow__down}
+                    style={{
+                      opacity: sortDirect === SortDirect.DOWN ? 1 : '',
+                    }}
+                    onClick={event => {
+                      event.stopPropagation()
+                      setSortDirect(SortDirect.DOWN)
+                    }}
+                  />
+                )}
+              </li>
+            ))}
+        </ul>
+        <ul className={mainCl.content__menu}>
+          {ordersData?.data.map(order => (
+            <li key={order.id} onClick={() => onClickOrder(order)}>
+              <OrderModelRow
+                checkFieldsList={
+                  userId
+                    ? checkFields.filter(el => el.title !== sortTitlesView.NAME)
+                    : checkFields
+                }
+                checkList={checkList}
+                setCheckList={setCheckList}
+                userId={userId}
+                order={order}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <CSSTransition
+        in={isViewCreateWindow}
+        timeout={300}
+        classNames='popup'
+        unmountOnExit
+      >
+        <ModalWindow>
+          {currentOrder && (
+            <OrderModelCreateWindow
+              order={currentOrder}
+              username={username}
+              toClose={() => setIsViewCreateWindow(false)}
+            />
+          )}
+        </ModalWindow>
+      </CSSTransition>
+
+      <Pagination
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalCount={ordersData?.totalCount || 0}
+      />
+    </div>
   )
 }
 export default OrderModel

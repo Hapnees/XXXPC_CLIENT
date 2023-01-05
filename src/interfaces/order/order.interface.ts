@@ -1,5 +1,6 @@
 export interface IOrderForm {
   serviceId: number
-  prices: string[]
+  price?: number
+  priceRange?: number[]
   comment: string
 }

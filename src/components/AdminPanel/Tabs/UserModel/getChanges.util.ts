@@ -1,8 +1,6 @@
-import {
-  IUserUpdate,
-  UsersGetResponse,
-} from '@interfaces/adminInterfaces/index'
-import { objectCompare, rolesConvertReverse } from '@utils/index'
+import { IUserUpdate, UsersGetResponse } from '@interfaces/adminInterfaces/user'
+import { RolesView } from '@interfaces/roles.interface'
+import { objectCompare } from '@utils/index'
 
 export const getChanges = (
   dataArray: IUserUpdate[],
@@ -30,7 +28,7 @@ export const getChanges = (
     const currentObject = objectCompare(oldData, newData)
     changes.push(currentObject)
 
-    const roleNew = rolesConvertReverse(dataArray[i].roleView)
+    const roleNew = dataArray[i].role
     if (roleNew && roleOld && roleNew !== roleOld) {
       changes[changes.length - 1].changes['role'] = roleNew
     }

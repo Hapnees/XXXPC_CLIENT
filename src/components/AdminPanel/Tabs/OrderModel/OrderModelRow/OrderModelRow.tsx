@@ -1,29 +1,29 @@
-import { OrdersGetResponse } from '@interfaces/adminInterfaces'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
 import {
+  OrdersGetResponse,
   OrderStatus,
   OrderStatusView,
-} from '@interfaces/adminInterfaces/order-status.enum'
+} from '@interfaces/adminInterfaces/order'
 import { dateFormat } from '@utils/date.format'
+import { pricesFormat } from '@utils/prices.format'
 import React, { FC } from 'react'
 import mainCl from '../../tabs.module.scss'
-import { TypeOrderModel } from '../fields.type'
-
-// TODO: НУЖЕН РЕФАКТОРИНГ!
+import { sortTitles } from '../OrderModel.interface'
 
 interface IProps {
-  widths: TypeOrderModel
   order: OrdersGetResponse
   userId?: number
   setCheckList: React.Dispatch<React.SetStateAction<number[]>>
   checkList: number[]
+  checkFieldsList: IFieldMenuElement[]
 }
 
 const OrderModelRow: FC<IProps> = ({
-  widths,
   order,
   userId,
   checkList,
   setCheckList,
+  checkFieldsList,
 }) => {
   const value = checkList.includes(order.id)
 
@@ -49,8 +49,7 @@ const OrderModelRow: FC<IProps> = ({
       }}
     >
       <li
-        style={{ width: widths.check }}
-        className={mainCl.not_input}
+        className={`${mainCl.not_input} ${mainCl.short__element}`}
         onClick={event => onChangeCheck(event)}
       >
         <input
@@ -60,61 +59,76 @@ const OrderModelRow: FC<IProps> = ({
           onChange={event => onChangeCheck(event)}
         />
       </li>
-      <li style={{ width: widths.id }}>
+      <li className={mainCl.short__element}>
         <p>{order.id}</p>
       </li>
-      <li style={{ width: widths.comment }}>
-        <p className='w-[180px] overflow-hidden text-ellipsis'>
-          {order.comment}
-        </p>
-      </li>
-      <li
-        style={{
-          width: widths.status,
-          backgroundColor:
-            order.status === OrderStatus.PENDING
-              ? 'rgba(159, 149, 1, 0.706)'
-              : order.status === OrderStatus.PROCESSING
-              ? 'rgba(168, 222, 18, 0.501)'
-              : order.status === OrderStatus.COMPLETED
-              ? 'rgba(63, 205, 50, 0.615)'
-              : order.status === OrderStatus.STOPPED
-              ? 'rgba(50, 197, 205, 0.615)'
-              : order.status === OrderStatus.REJECTED
-              ? 'rgba(205, 50, 50, 0.615)'
-              : '',
-        }}
-      >
-        <p>{OrderStatusView[order.status as keyof typeof OrderStatusView]}</p>
-      </li>
-      <li style={{ width: widths.prices }}>
-        <p className='flex gap-2 w-[180px] overflow-hidden text-ellipsis'>
-          {order.prices.length === 2 ? (
-            <>
-              <p>{order.prices[0]}</p>---
-              <p>{order.prices[1]}</p>
-            </>
-          ) : (
-            order.prices.length === 1 && <p>{order.prices[0]}</p>
-          )}
-        </p>
-      </li>
-      <li style={{ width: widths.updatedAt }}>
-        <p>{dateFormat(order.updatedAt, { withTime: true })}</p>
-      </li>
-      <li style={{ width: widths.createdAt }}>
-        <p>{dateFormat(order.createdAt, { withTime: true })}</p>
-      </li>
-      {!userId && (
-        <li style={{ width: widths.username }}>
-          <p>{order.User.username}</p>
+      {checkFieldsList.find(el => el.title === sortTitles.COMMENT)?.checked && (
+        <li>
+          <p className='w-[180px] overflow-hidden text-ellipsis'>
+            {order.comment}
+          </p>
         </li>
       )}
-      <li style={{ width: widths.serviceTitle }}>
-        <p className='w-[180px] overflow-hidden text-ellipsis'>
-          {order.service.title}
-        </p>
-      </li>
+      {checkFieldsList.find(el => el.title === sortTitles.STATUS)?.checked && (
+        <li
+          style={{
+            backgroundColor:
+              order.status === OrderStatus.PENDING
+                ? 'rgba(159, 149, 1, 0.706)'
+                : order.status === OrderStatus.PROCESSING
+                ? 'rgba(168, 222, 18, 0.501)'
+                : order.status === OrderStatus.COMPLETED
+                ? 'rgba(63, 205, 50, 0.615)'
+                : order.status === OrderStatus.STOPPED
+                ? 'rgba(50, 197, 205, 0.615)'
+                : order.status === OrderStatus.REJECTED
+                ? 'rgba(205, 50, 50, 0.615)'
+                : '',
+          }}
+        >
+          <p>{OrderStatusView[order.status as keyof typeof OrderStatusView]}</p>
+        </li>
+      )}
+      {checkFieldsList.find(el => el.title === sortTitles.PRICE)?.checked && (
+        <li>
+          <div className='flex gap-2 w-[180px] overflow-hidden text-ellipsis px-2'>
+            {order.price ? (
+              <p>{order.price} руб</p>
+            ) : (
+              order.priceRange?.length && (
+                <p>{pricesFormat(order.priceRange)}</p>
+              )
+            )}
+          </div>
+        </li>
+      )}
+
+      {!userId &&
+        checkFieldsList.find(el => el.title === sortTitles.NAME)?.checked && (
+          <li>
+            <p>{order?.User.username}</p>
+          </li>
+        )}
+      {checkFieldsList.find(el => el.title === sortTitles.SERVICE_TITLE)
+        ?.checked && (
+        <li>
+          <p className='w-[180px] overflow-hidden text-ellipsis'>
+            {order.service.title}
+          </p>
+        </li>
+      )}
+      {checkFieldsList.find(el => el.title === sortTitles.DATE_UPDATED)
+        ?.checked && (
+        <li className={mainCl.date__element}>
+          <p>{dateFormat(order.updatedAt, { withTime: true })}</p>
+        </li>
+      )}
+      {checkFieldsList.find(el => el.title === sortTitles.DATE_CREATED)
+        ?.checked && (
+        <li className={mainCl.date__element}>
+          <p>{dateFormat(order.createdAt, { withTime: true })}</p>
+        </li>
+      )}
     </ul>
   )
 }

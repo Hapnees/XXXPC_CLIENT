@@ -1,3 +1,8 @@
+* {
+	scrollbar-color: #95558c transparent;
+	scrollbar-width: 2px;
+}
+
 .card {
 	@apply flex flex-col items-center border w-[400px] h-[570px] px-4 pb-4 pt-2;
 
@@ -7,6 +12,7 @@
 
 	border: 1px solid #c672b9;
 	border-radius: 10px;
+
 }
 
 .card__top__content {
@@ -22,8 +28,19 @@
 	@apply flex flex-col px-2 grow w-full;
 }
 
+.menus {
+	@apply flex flex-col gap-4 h-[320px] overflow-auto;
+}
+
+.menu__title {
+	@apply mb-2;
+	color: #ffcbf7;
+}
+
+
 .description {
-	@apply text-center py-4;
+	@apply text-center py-2;
+	color: #dda8d5;
 	word-wrap: break-word;
 	display: -webkit-box;
 	-webkit-line-clamp: 3;
@@ -41,4 +58,14 @@
 	&:hover {
 		background-color: #267a685f;
 	}
+}
+
+::-webkit-scrollbar {
+	background-color: #95558c;
+	box-shadow: 0 0 5px #f252da;
+	width: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #d265c4;
 }

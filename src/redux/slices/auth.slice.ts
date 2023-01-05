@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Roles } from '@interfaces/roles.interface'
+import { Roles, RolesView } from '@interfaces/roles.interface'
 
 interface IState {
   user: {
@@ -32,7 +32,12 @@ export const authSlice = createSlice({
       state.refreshToken = action.payload.refreshToken || state.refreshToken
     },
     authLogout: state => {
-      state.user = { username: '', avatarPath: '', id: 0, role: Roles.VISITOR }
+      state.user = {
+        username: '',
+        avatarPath: '',
+        id: 0,
+        role: Roles.VISITOR,
+      }
       state.accessToken = ''
       state.refreshToken = ''
     },

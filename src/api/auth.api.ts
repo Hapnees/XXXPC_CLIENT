@@ -1,5 +1,4 @@
 import { ILoginForm } from '../components/AuthForms/LoginForm/LoginForm.interface'
-import { IRegisterForm } from '../components/AuthForms/RegisterForm/RegisterForm.interface'
 import { IAuthResponse } from '../interfaces/auth/auth-response.interface'
 import { ITokens } from '../interfaces/auth/tokens.interface'
 import { Roles } from '../interfaces/roles.interface'

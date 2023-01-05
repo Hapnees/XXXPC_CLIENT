@@ -1,10 +1,12 @@
 import { useAdminUploadImageMutation } from '@api/media.api'
 import { useAdminUpdateRepairCardMutation } from '@api/repairCard.api'
 import { useHeaders } from '@hooks/useHeaders'
-import { RepairCardsGetResponse } from '@interfaces/adminInterfaces'
-import { IRepairCardCreate } from '@interfaces/adminInterfaces/repair-card-create.interface'
+import {
+  RepairCardsGetResponse,
+  IRepairCardCreate,
+} from '@interfaces/adminInterfaces/repair-card'
+import customToast from '@utils/customToast'
 import { useCallback } from 'react'
-import { toast } from 'react-toastify'
 
 export const useUpdateCard = (
   cardData: RepairCardsGetResponse | undefined,
@@ -23,9 +25,7 @@ export const useUpdateCard = (
       updateCard({ body: { ...repairCard, id: cardData.id }, headers })
         .unwrap()
         .then(response => {
-          toast.success(response.message)
-          repairCardModelRefetch()
-          refetch()
+          customToast.success(response.message)
 
           if (icon) {
             const iconPath = new FormData()
@@ -34,12 +34,10 @@ export const useUpdateCard = (
             uploadIcon({
               data: { image: iconPath, folder: 'icon', id: cardData.id },
               headers,
+            }).then(() => {
+              refetch()
+              repairCardModelRefetch()
             })
-              .unwrap()
-              .then(() => {
-                refetch()
-                repairCardModelRefetch()
-              })
           }
         })
     },

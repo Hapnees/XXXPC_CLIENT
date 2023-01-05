@@ -3,7 +3,8 @@ export interface OrdersGetResponse {
   comment: string
   status: string
   note: string
-  prices: string[]
+  price?: number
+  priceRange?: number[]
   updatedAt: string
   createdAt: string
   User: {

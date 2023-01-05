@@ -4,10 +4,12 @@ import cl from './MenuCreate.module.scss'
 import { BsPlusLg } from 'react-icons/bs'
 import Paragraph from './MenuElement/MenuElement'
 import { IoClose } from 'react-icons/io5'
-import { toast } from 'react-toastify'
-import { IRepairCardParagraph } from '@interfaces/adminInterfaces/repair-card-paragraph.interface'
-import { IRepairCardMenu } from '@interfaces/adminInterfaces/repair-card-menu.interface'
+import {
+  IRepairCardParagraph,
+  IRepairCardMenu,
+} from '@interfaces/adminInterfaces/repair-card'
 import { sortById } from '@utils/sortById.sort'
+import customToast from '@utils/customToast'
 
 //TODO: вынести функцию сортировки в utils
 
@@ -56,7 +58,7 @@ const MenuCreate: FC<IProps> = ({
   const onClickAdd = (event: React.MouseEvent) => {
     event.preventDefault()
     if (!title) {
-      toast.error('Отсутствует название меню')
+      customToast.error('Отсутствует название меню')
       return
     }
 
@@ -88,9 +90,15 @@ const MenuCreate: FC<IProps> = ({
     setIsNoOpenEdit()
   }
 
+  const onKeyDownTab = (event: React.KeyboardEvent) => {
+    if (event.key === 'Tab') {
+      onClickCreateElement()
+    }
+  }
+
   return (
     <ModalWindow>
-      <div className={cl.wrapper}>
+      <div className={cl.wrapper} onKeyDown={event => onKeyDownTab(event)}>
         <IoClose
           size={30}
           className='absolute right-1 p-1 cursor-pointer'

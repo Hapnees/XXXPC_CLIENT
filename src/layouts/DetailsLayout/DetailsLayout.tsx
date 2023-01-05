@@ -10,7 +10,7 @@ interface IProps {
 
 const DetailsLayout: FC<IProps> = ({ img, title, body, children }) => {
   return (
-    <div className='text-[#ffd2f8] mb-12'>
+    <div className={cl.wrapper}>
       <p className={cl.top__title}>{title}</p>
 
       <div>
@@ -20,8 +20,10 @@ const DetailsLayout: FC<IProps> = ({ img, title, body, children }) => {
 						alt='Изображение'
 						className='w-[250px] h-[300px] object-cover shrink-0'
 					/> */}
-          <div className='w-[250px] h-[300px] shrink-0 border border-light-green'></div>
-          <div className={cl.top__body}>{body}</div>
+          <div className='flex gap-6 items-center'>
+            <div className='w-[250px] h-[300px] shrink-0 border border-light-green'></div>
+            <div className={cl.top__body}>{body}</div>
+          </div>
         </div>
         {children}
       </div>

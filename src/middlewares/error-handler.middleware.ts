@@ -3,10 +3,10 @@ import {
   Middleware,
   MiddlewareAPI,
 } from '@reduxjs/toolkit'
-import { toast } from 'react-toastify'
 import ErrorWindow from '../components/UI/ErrorWindow/ErrorWindow'
-import { AdminError } from '@interfaces/adminInterfaces/index'
+import { AdminError } from '@interfaces/adminInterfaces/error.interface'
 import { IError } from '@interfaces/error.interface'
+import customToast from '@utils/customToast'
 
 export const ErrorHandler: Middleware =
   (api: MiddlewareAPI) => next => action => {
@@ -15,28 +15,28 @@ export const ErrorHandler: Middleware =
       if (errorMessage.messages) {
         const currentError = errorMessage.messages
         currentError.forEach(message => {
-          toast.error(message || 'Ошибка')
+          customToast.error(message || 'Ошибка')
         })
       } else if (errorMessage.message) {
         const currentError = action.payload.data.message
         if (currentError) {
           if (typeof currentError === 'string') {
             console.error(currentError || 'Ошибка')
-            toast.error(currentError || 'Ошибка')
+            customToast.error(currentError || 'Ошибка')
           } else if (Array.isArray(currentError)) {
             currentError.forEach(message => {
-              toast.error(message || 'Ошибка')
+              customToast.error(message || 'Ошибка')
             })
           }
         }
       } else {
         const errors = action.payload.data as AdminError[]
         if (errors)
-          toast.error(ErrorWindow({ errors }), {
+          customToast.error(ErrorWindow({ errors }), {
             style: { width: '450px' },
           })
         else {
-          toast.error('Ошибка')
+          customToast.error('Ошибка')
         }
       }
     }

@@ -3,7 +3,7 @@ import DetailPriceList from '@components/DetailPriceList/DetailPriceList'
 import RepairCardMenu from '@components/RepairCardMenu/RepairCardMenu'
 import DetailsLayout from '@layouts/DetailsLayout/DetailsLayout'
 import { deffects } from './menus'
-import { RepairCardResponse } from '@interfaces/repair/repair-card.interface'
+import { ISerivce } from '@interfaces/repair/service.interface'
 
 const title = 'Ремонт компьютеров и их комплектующих'
 const body = (
@@ -25,25 +25,19 @@ const body = (
   </p>
 )
 
-//FIXME: РЕВОРК КАРТОЧЕК РЕМОНТА И СТРАНИЦ ДЕТАЛЕЙ!!!
-//FIXME: НУЖНО ВСЁ ПЕРЕДЕЛАТЬ!!!
-
 const repairCardMenuTitle = 'Виды неисправностей'
 
 interface IProrps {
-  repairCard: RepairCardResponse
+  services: ISerivce[]
 }
 
-const DetailsPagePC: FC<IProrps> = ({ repairCard }) => {
+const DetailsPagePC: FC<IProrps> = ({ services }) => {
   return (
-    repairCard && (
-      <DetailsLayout title={title} body={body} img=''>
-        <DetailPriceList services={repairCard.services} />
+    <DetailsLayout title={title} body={body} img=''>
+      <DetailPriceList services={services} />
 
-        <RepairCardMenu title={repairCardMenuTitle} array={deffects} />
-        <div className='mb-[250px]'></div>
-      </DetailsLayout>
-    )
+      <RepairCardMenu title={repairCardMenuTitle} array={deffects} />
+    </DetailsLayout>
   )
 }
 

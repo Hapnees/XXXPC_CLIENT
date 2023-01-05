@@ -4,5 +4,5 @@ export interface IOrderUpdate {
   id: number
   status?: OrderStatus
   note?: string
-  prices?: string[]
+  prices?: number[]
 }

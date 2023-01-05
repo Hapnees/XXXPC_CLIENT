@@ -9,7 +9,7 @@ interface IProps {
 
 const RepairCardMenu: FC<IProps> = ({ title, array }) => {
   return (
-    <div className='px-4'>
+    <div className='px-4 text-[20px]'>
       <p className='mb-2'>{title}</p>
 
       <ul className={cl.menu}>

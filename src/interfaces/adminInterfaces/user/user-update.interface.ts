@@ -1,14 +1,14 @@
-import { Roles, RolesResponse } from '../roles.interface'
+import { Roles, RolesView } from '../../roles.interface'
 import { UsersGetResponse } from './users-get.interface'
 
 export interface IUserUpdate {
   id: number
-  role?: RolesResponse
-  roleView?: Roles
+  role?: Roles
+  roleView?: RolesView
   username: string
   email: string
   password?: string
-  hashedRt: string
+  isOnline: boolean
   avatarPath: string
   phone?: string
   updatedAt?: string

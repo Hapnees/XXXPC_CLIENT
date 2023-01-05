@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { OrderStatusView } from '@interfaces/adminInterfaces/order-status.enum'
+import { OrderStatusView } from '@interfaces/adminInterfaces/order/order-status.enum'
 import { OrderGetResponse } from '@interfaces/order/order-get-response.interface'
 import { IoClose } from 'react-icons/io5'
 import cl from './MyOrderDetails.module.scss'
@@ -38,13 +38,15 @@ const MyOrderDetails: FC<IProps> = ({ toBack, order }) => {
             <p className='text-[#de4fc8]'>{order.service.title}</p>
           </div>
           <div className={cl.field}>
-            {order.prices.length === 2 ? (
+            {order.priceRange?.length ? (
               <p>Окончательная стоимость не рассчитана</p>
             ) : (
-              <>
-                <p>Стомиость</p>
-                <p className='text-[#de4fc8]'>{order.prices}</p>
-              </>
+              !!order.price && (
+                <>
+                  <p>Стомиость</p>
+                  <p className='text-[#de4fc8]'>{order.price} руб</p>
+                </>
+              )
             )}
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { useRegisterMutation } from '@api/auth.api'
 import { useActions } from './useActions'
+import customToast from '@utils/customToast'
 
 // Регистрация пользователя
 export const useRegister = (headers: any) => {
@@ -15,7 +15,7 @@ export const useRegister = (headers: any) => {
     registerUser(headers)
       .unwrap()
       .then(response => {
-        toast.success('Вы успешно зарегестрировались')
+        customToast.success('Вы успешно зарегестрировались')
         setAuth(response)
         timer = setTimeout(() => {
           navite('/')

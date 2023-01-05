@@ -1,29 +1,37 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { useHeaders } from '@hooks/useHeaders'
 import { AdminLoader } from '@components/UI/AdminUi'
 import mainCl from '../tabs.module.scss'
 import { checkNewUsers } from './checkNewUsers'
 import UserModelRow from './UserModelRow/UserModelRow'
-import { UserModelWidths } from './fields.type'
 import { useSetValue, useSetErrors } from './hooks/index'
 import { getChanges } from './getChanges.util'
-import { AdminError, IUserUpdate } from '@interfaces/adminInterfaces'
 import {
   useDeleteUsersMutation,
-  useGetUsersQuery,
+  useLazyGetUsersQuery,
   useUpdateUsersMutation,
 } from '@api/user.api'
-import { Roles, RolesResponse } from '@interfaces/roles.interface'
+import { Roles, RolesView } from '@interfaces/roles.interface'
 import {
   CreateButton,
   DeleteButton,
   UpdateButton,
 } from '@components/UI/AdminUi/Buttons'
 import OrderModel from '../OrderModel/OrderModel'
+import SpecialInput from '@components/UI/AdminUi/AdminSpecialInput/SpecialInput'
+import { HiSearch } from 'react-icons/hi'
+import { IUserUpdate } from '@interfaces/adminInterfaces/user'
+import { AdminError } from '@interfaces/adminInterfaces/error.interface'
+import { userMenuTitles } from '../tabs.titles'
+import customToast from '@utils/customToast'
+import AdminFieldsPopup from '@components/AdminPanel/AdminFieldsPopup/AdminFieldsPopup'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
+import Pagination from '@components/AdminPanel/Pagination/Pagination'
 
 const UserModel = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const searchRef = useRef<HTMLInputElement>(null)
   const [deleteUsers, { isLoading: isLoadingDeleteUsers }] =
     useDeleteUsersMutation()
   const [updateUsers, { isLoading: isLoadingUpdateUsers }] =
@@ -35,58 +43,46 @@ const UserModel = () => {
     handleSubmit,
     setError,
   } = useForm<IUserUpdate[]>({ mode: 'onChange' })
-  const [widths, setWidths] = useState<UserModelWidths>({} as UserModelWidths)
 
   const [checkList, setCheckList] = useState<number[]>([])
 
   const [isViewsOrders, setIsViewOrders] = useState(false)
   const [currentUser, setCurrentUser] = useState<IUserUpdate>()
 
-  const checkRef = useRef<HTMLLIElement>(null)
-  const idRef = useRef<HTMLLIElement>(null)
-  const usernameRef = useRef<HTMLLIElement>(null)
-  const emailRef = useRef<HTMLLIElement>(null)
-  const roleRef = useRef<HTMLLIElement>(null)
-  const hashRef = useRef<HTMLLIElement>(null)
-  const hashedRtRef = useRef<HTMLLIElement>(null)
-  const avatarPathRef = useRef<HTMLLIElement>(null)
-  const phoneRef = useRef<HTMLLIElement>(null)
-  const ordersRef = useRef<HTMLLIElement>(null)
-  const updatedAtRef = useRef<HTMLLIElement>(null)
-  const createdAtRef = useRef<HTMLLIElement>(null)
-
   const [newUsers, setNewUsers] = useState<IUserUpdate[]>([])
   const [allUsers, setAllUsers] = useState<IUserUpdate[]>([])
   const headers = useHeaders()
-  const { data: usersGetData, isLoading } = useGetUsersQuery(headers)
+
+  const [getUsers, { data: getUsersData, isLoading }] = useLazyGetUsersQuery()
+
+  const getAndSetUsers = useCallback(
+    () =>
+      getUsers({ headers, search: searchRef.current?.value, page: currentPage })
+        .unwrap()
+        .then(response => setAllUsers(response.data)),
+    [getUsers]
+  )
+
   const [usersErrors, setUsersErrors] = useState<AdminError[]>(
     [] as AdminError[]
   )
 
-  // Получаем пользователей
+  const [checkFields, setCheckFields] = useState<IFieldMenuElement[]>(
+    userMenuTitles
+      .map(el => ({ title: el, checked: true }))
+      .map(el => ({
+        ...el,
+        checked:
+          el.title === 'Дата регистрации' || el.title === 'Дата обновления'
+            ? false
+            : true,
+      }))
+  )
+
+  //Получаем и сетаем пользователей
   useEffect(() => {
-    if (!usersGetData) return
-
-    setAllUsers(usersGetData)
-  }, [usersGetData])
-
-  // Сетаем ширины полей
-  useLayoutEffect(() => {
-    setWidths({
-      check: checkRef.current?.offsetWidth || 0,
-      id: idRef.current?.offsetWidth || 0,
-      username: usernameRef.current?.offsetWidth || 0,
-      email: emailRef.current?.offsetWidth || 0,
-      role: roleRef.current?.offsetWidth || 0,
-      hash: hashRef.current?.offsetWidth || 0,
-      hashedRt: hashedRtRef.current?.offsetWidth || 0,
-      avatarPath: avatarPathRef.current?.offsetWidth || 0,
-      phone: phoneRef.current?.offsetWidth || 0,
-      orders: ordersRef.current?.offsetWidth || 0,
-      updatedAt: updatedAtRef.current?.offsetWidth || 0,
-      createdAt: createdAtRef.current?.offsetWidth || 0,
-    })
-  }, [allUsers])
+    getAndSetUsers()
+  }, [currentPage])
 
   // Сетаем значения при получении данных
   useSetValue(setValue, allUsers)
@@ -130,14 +126,14 @@ const UserModel = () => {
     checkNewUsers(correctNewUsersArray, changeDataArray)
 
     if (!changeDataArray.length) {
-      toast.error('Изменений нет!')
+      customToast.error('Изменений нет!')
       return
     }
 
     updateUsers({ body: { data: changeDataArray }, headers })
       .unwrap()
       .then(response => {
-        toast.success(response.message)
+        customToast.success(response.message)
         setNewUsers([])
       })
       .catch(reject => {
@@ -149,8 +145,8 @@ const UserModel = () => {
     const tempId = Math.floor(Math.random() * 99 - 1)
     const newUser = {
       id: tempId,
-      roleView: Roles.USER,
-      role: RolesResponse.USER,
+      roleView: RolesView.USER,
+      role: Roles.USER,
     } as IUserUpdate
     setNewUsers(prev => [...prev, newUser])
     setAllUsers(prev => [...prev, newUser])
@@ -164,7 +160,7 @@ const UserModel = () => {
 
     deleteUsers({ body: { ids: idsForRequest }, headers })
       .unwrap()
-      .then(response => toast.success(response.message))
+      .then(response => customToast.success(response.message))
 
     setCheckList([])
   }
@@ -174,52 +170,92 @@ const UserModel = () => {
     setIsViewOrders(true)
   }
 
+  const onKeyDownEnter = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      getAndSetUsers()
+    }
+  }
+
   return (
     <>
       {isLoading || isLoadingUpdateUsers || isLoadingDeleteUsers ? (
         <AdminLoader />
       ) : isViewsOrders ? (
-        <OrderModel userId={currentUser?.id} username={currentUser?.username} />
+        <OrderModel
+          userId={currentUser?.id}
+          username={currentUser?.username}
+          toBack={() => setIsViewOrders(false)}
+        />
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='flex gap-2 mb-2 ml-2'>
-            <p className='text-[20px]'>Пользователи</p>
-            <UpdateButton />
-            <CreateButton onClickCreate={onClickCreate} />
-            <DeleteButton onClickDelete={onClickDelete} />
-          </div>
-          <div className={mainCl.container__menu}>
-            <ul className={mainCl.top__menu}>
-              <li ref={checkRef}>C</li>
-              <li ref={idRef}>№</li>
-              <li ref={usernameRef}>Имя пользователя</li>
-              <li ref={emailRef}>Почта</li>
-              <li ref={roleRef}>Роль</li>
-              <li ref={hashRef}>Пароль</li>
-              <li ref={hashedRtRef}>Токен обновления</li>
-              <li ref={avatarPathRef}>Аватарка</li>
-              <li ref={phoneRef}>№ телефона</li>
-              <li ref={ordersRef}>Заказы</li>
-              <li ref={updatedAtRef}>Дата обновления</li>
-              <li ref={createdAtRef}>Дата регистрации</li>
-            </ul>
-            <ul className={mainCl.content__menu}>
-              {allUsers?.map(user => (
-                <li key={user.id}>
-                  <UserModelRow
-                    user={user}
-                    key={user.id}
-                    widths={widths}
-                    register={register}
-                    errors={errors}
-                    setCheckList={setCheckList}
-                    checkList={checkList}
-                    onClickUserOrders={() => onClickUserOrders(user)}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='flex flex-col items-center'
+        >
+          <div>
+            <div className='flex items-center mb-2 ml-2'>
+              <div className='flex items-center gap-2'>
+                <p className='text-[20px]'>Пользователи</p>
+                <UpdateButton />
+                <CreateButton onClickCreate={onClickCreate} />
+                <DeleteButton onClickDelete={onClickDelete} />
+                <div className='flex items-center gap-2'>
+                  <div className='w-[400px]'>
+                    <SpecialInput
+                      placeholder='Поиск пользователя'
+                      ref={searchRef}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        if (searchRef.current?.value)
+                          searchRef.current.value = event.target.value
+                      }}
+                      onKeyDown={event => onKeyDownEnter(event)}
+                    />
+                  </div>
+                  <HiSearch
+                    className='bg-[#434e62] w-[70px] h-[35px] p-[6px] rounded-md cursor-pointer'
+                    onClick={getAndSetUsers}
                   />
-                </li>
-              ))}
-            </ul>
+                </div>
+                {/* <AdminFieldsPopup
+                  checkFields={checkFields}
+                  setCheckFields={setCheckFields}
+                /> */}
+              </div>
+            </div>
+            <div className={mainCl.container__menu}>
+              <ul className={mainCl.top__menu}>
+                {checkFields
+                  .filter(el => el.checked)
+                  .map((el, idx) => (
+                    <li key={idx}>{el.title}</li>
+                  ))}
+              </ul>
+              <ul className=''>
+                {allUsers?.map(user => (
+                  <li key={user.id}>
+                    <UserModelRow
+                      user={user}
+                      key={user.id}
+                      register={register}
+                      errors={errors}
+                      setCheckList={setCheckList}
+                      checkList={checkList}
+                      checkFieldsList={checkFields}
+                      onClickUserOrders={() => onClickUserOrders(user)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
+          <Pagination
+            totalCount={getUsersData?.totalCount || 0}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </form>
       )}
     </>

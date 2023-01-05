@@ -27,18 +27,18 @@ export const useRefreshTokens = () => {
   // Обновляем токены каждые 14 минут
   useEffect(() => {
     if (!isAuth) return
-
     const interval = setInterval(() => {
       refreshTokens(headers)
         .unwrap()
-        .then(response =>
+        .then(response => {
+          console.log('REFRESH TOKENS')
           setAuth({
             accessToken: response.tokens.accessToken,
             refreshToken: response.tokens.refreshToken,
             user: { role: response.role },
           })
-        )
-    }, 60_000 * 14)
+        })
+    }, 60_000 * 15)
 
     return () => clearInterval(interval)
   }, [isAuth])

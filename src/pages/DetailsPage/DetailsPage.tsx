@@ -1,14 +1,14 @@
+import React from 'react'
 import { useGetRepairCardQuery } from '@api/repairCard.api'
-import Loader from '@components/UI/Loader/Loader'
-import { RepairCardSlug } from '@interfaces/adminInterfaces/repair-card-slug.enum'
+import { RepairCardSlug } from '@interfaces/adminInterfaces/repair-card/repair-card-slug.enum'
 import { RepairCardResponse } from '@interfaces/repair/repair-card.interface'
-import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import DetailsPageLAPTOP from './pages/DetailsPageLAPTOP/DetailsPageLAPTOP'
 import DetailsPagePC from './pages/DetailsPagePC/DetailsPagePC'
+import Loader from '@components/UI/Loader/Loader'
 
 const DetailsPage = () => {
   const params = useParams()
-  const navigate = useNavigate()
   const slug = params.slug || ''
 
   const { data: repairCard, isLoading } = useGetRepairCardQuery(slug)
@@ -18,7 +18,9 @@ const DetailsPage = () => {
 
     switch (slug) {
       case RepairCardSlug.PC:
-        return <DetailsPagePC repairCard={currentRepairCard} />
+        return <DetailsPagePC services={repairCard?.services || []} />
+      case RepairCardSlug.LAPTOP:
+        return <DetailsPageLAPTOP services={repairCard?.services || []} />
     }
   }
 

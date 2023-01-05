@@ -9,7 +9,7 @@ import { IOrderForm } from '@interfaces/order/order.interface'
 import { useCreateOrderMutation } from '@api/order.api'
 import { useHeaders } from '@hooks/useHeaders'
 import { useGetServiceQuery } from '@api/service.api'
-import { toast } from 'react-toastify'
+import customToast from '@utils/customToast'
 
 const OrderPage = () => {
   const navigate = useNavigate()
@@ -23,15 +23,17 @@ const OrderPage = () => {
 
   const onSubmit: SubmitHandler<IOrderForm> = async data => {
     if (!serviceData) {
-      toast.error('Услуга не найдена')
+      customToast.error('Услуга не найдена')
       return
     }
 
     data.serviceId = serviceId
-    data.prices = serviceData.prices
     createOrder({ body: data, headers })
-    toast.success('Ваш заказ принят!')
-    navigate('/orders')
+      .unwrap()
+      .then(response => {
+        customToast.success(response.message)
+        navigate('/orders')
+      })
   }
 
   return (
@@ -50,11 +52,12 @@ const OrderPage = () => {
                 <p className={cl.title}>Стоимость</p>
                 {serviceData.prices.length === 2 ? (
                   <p className={cl.body}>
-                    от {serviceData.prices[0]} до {serviceData.prices[1]}
+                    от {serviceData.prices[0]} руб до {serviceData.prices[1]}{' '}
+                    руб
                   </p>
                 ) : (
                   serviceData.prices.length === 1 && (
-                    <p className={cl.body}>{serviceData.prices[0]}</p>
+                    <p className={cl.body}>{serviceData.prices[0]} руб</p>
                   )
                 )}
               </li>
@@ -67,7 +70,7 @@ const OrderPage = () => {
               {serviceData.prices.length === 2 && (
                 <div className={cl.info}>
                   <FiInfo size={20} />
-                  <p>Точная цена будет рассчитана после осмотра девайса</p>
+                  <p>Точная цена будет рассчитана после осмотра</p>
                 </div>
               )}
             </div>

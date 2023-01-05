@@ -1,27 +1,27 @@
 import React, { FC } from 'react'
 import mainCl from '../../tabs.module.scss'
-import { TypeRepairCardModel } from '../fields.type'
-import { RepairCardsGetResponse } from '@interfaces/adminInterfaces'
+import { RepairCardsGetResponse } from '@interfaces/adminInterfaces/repair-card'
 import { dateFormat } from '@utils/date.format'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
 
 interface IProps {
-  widths: TypeRepairCardModel
   card: RepairCardsGetResponse
   setCheckList: React.Dispatch<React.SetStateAction<number[]>>
   setCurrentCard: React.Dispatch<
     React.SetStateAction<RepairCardsGetResponse | undefined>
   >
   checkList: number[]
+  checkFieldsList: IFieldMenuElement[]
   viewCreateWindow: () => void
 }
 
 const RepairCardModelRow: FC<IProps> = ({
-  widths,
   card,
   checkList,
   setCheckList,
   viewCreateWindow,
   setCurrentCard,
+  checkFieldsList,
 }) => {
   const value = checkList.includes(card.id)
 
@@ -57,8 +57,7 @@ const RepairCardModelRow: FC<IProps> = ({
         onClick={event => onClickRow(event)}
       >
         <li
-          style={{ width: widths.check }}
-          className={mainCl.not_input}
+          className={`${mainCl.not_input} ${mainCl.short__element}`}
           onClick={event => onChangeCheck(event)}
         >
           <input
@@ -68,52 +67,66 @@ const RepairCardModelRow: FC<IProps> = ({
             onChange={event => onChangeCheck(event)}
           />
         </li>
-        <li style={{ width: widths.id }}>{card.id}</li>
-        <li style={{ width: widths.title }}>
-          <p className='overflow-hidden' style={{ width: widths.title - 20 }}>
-            {card.title}
-          </p>
-        </li>
-        <li style={{ width: widths.slug }}>
-          <p className='overflow-hidden' style={{ width: widths.slug - 20 }}>
-            {card.slug}
-          </p>
-        </li>
-        <a
-          href={card.iconPath}
-          target='_blank'
-          rel='noreferrer'
-          style={{ width: widths.icon }}
-          onClick={event => {
-            event.stopPropagation()
-          }}
-        >
-          <li style={{ width: widths.icon - 20 }}>
-            <p className='overflow-hidden'>{card.iconPath}</p>
+        {checkFieldsList.find(el => el.title === '№')?.checked && (
+          <li className={mainCl.short__element}>{card.id}</li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Название')?.checked && (
+          <li>
+            <p className='overflow-hidden'>{card.title}</p>
           </li>
-        </a>
-        <li style={{ width: widths.updatedAt }}>
-          {dateFormat(card.updatedAt, { withTime: true })}
-        </li>
-        <li style={{ width: widths.createdAt }}>
-          {dateFormat(card.createdAt, { withTime: true })}
-        </li>
-        <li className={mainCl.special} style={{ width: widths.services }}>
-          <p
-            style={{
-              backgroundColor: value ? 'rgba(135, 30, 30, 0.505)' : '#2d3748',
+        )}
+        {checkFieldsList.find(el => el.title === 'Категория')?.checked && (
+          <li>
+            <p className='overflow-hidden'>{card.slug}</p>
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Иконка')?.checked && (
+          <a
+            href={card.iconPath}
+            target='_blank'
+            rel='noreferrer'
+            onClick={event => {
+              event.stopPropagation()
             }}
           >
-            {card._count.services}
-          </p>
-          <p
-            style={{
-              backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : '#475264',
-            }}
-          >
-            Услуги
-          </p>
-        </li>
+            <li>
+              <p className='w-[180px] overflow-hidden text-ellipsis'>
+                {card.iconPath}
+              </p>
+            </li>
+          </a>
+        )}
+
+        {checkFieldsList.find(el => el.title === 'Услуги')?.checked && (
+          <li className={mainCl.special}>
+            <p
+              style={{
+                backgroundColor: value ? 'rgba(135, 30, 30, 0.505)' : '#2d3748',
+              }}
+            >
+              {card._count.services}
+            </p>
+            <p
+              style={{
+                backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : '#475264',
+              }}
+            >
+              Услуги
+            </p>
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Дата обновления')
+          ?.checked && (
+          <li className={mainCl.date__element}>
+            {dateFormat(card.updatedAt, { withTime: true })}
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Дата регистрации')
+          ?.checked && (
+          <li className={mainCl.date__element}>
+            {dateFormat(card.createdAt, { withTime: true })}
+          </li>
+        )}
       </ul>
     </div>
   )

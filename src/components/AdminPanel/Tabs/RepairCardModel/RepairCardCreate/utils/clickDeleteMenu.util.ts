@@ -1,4 +1,4 @@
-import { IRepairCardMenu } from '@interfaces/adminInterfaces/repair-card-menu.interface'
+import { IRepairCardMenu } from '@interfaces/adminInterfaces/repair-card'
 
 export const clickDeleteMenu =
   (

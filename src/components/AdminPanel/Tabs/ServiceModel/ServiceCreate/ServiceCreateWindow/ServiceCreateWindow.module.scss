@@ -24,7 +24,19 @@
 
 .price {
 	text-align: center;
-	width: 160px;
+	width: 120px;
+	-moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.price__wallet {
+	font-size: 18px;
+	color: rgb(202, 202, 202);
 }
 
 .button {

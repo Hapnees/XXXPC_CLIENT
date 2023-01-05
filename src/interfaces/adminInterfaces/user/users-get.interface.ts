@@ -1,12 +1,12 @@
-import { RolesResponse } from '../roles.interface'
+import { Roles } from '@interfaces/roles.interface'
 
 export interface UsersGetResponse {
   id: number
-  role?: RolesResponse
+  role?: Roles
   username: string
   email: string
   hash?: string
-  hashedRt: string
+  isOnline: boolean
   avatarPath: string
   phone?: string
   updatedAt?: string

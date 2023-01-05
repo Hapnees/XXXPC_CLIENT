@@ -1,6 +1,8 @@
-import { IServiceCreate } from '@interfaces/adminInterfaces/service-create.interface'
-import { IServiceUpdate } from '@interfaces/adminInterfaces/service.update.interface'
-import { ServiceGetResponse } from '../interfaces/adminInterfaces/service-get.interface'
+import {
+  IServiceCreate,
+  IServiceUpdate,
+  ServiceGetResponse,
+} from '@interfaces/adminInterfaces/service'
 import { ServiceResponse } from '../interfaces/service-response.interface'
 import { baseApi } from './baseApi.api'
 
@@ -48,12 +50,20 @@ export const serviceApi = baseApiWithTags.injectEndpoints({
     }),
 
     getServices: build.query<
-      ServiceGetResponse[],
-      { id?: number; headers: any }
+      { data: ServiceGetResponse[]; totalCount: any },
+      {
+        id?: number
+        search?: string
+        st?: string
+        sd?: string
+        limit?: number
+        page?: number
+        headers: any
+      }
     >({
-      query: ({ id, headers }) => ({
+      query: ({ id, search, st, sd, limit = 12, page, headers }) => ({
         url: 'service/get',
-        params: { id },
+        params: { search, st, sd, limit, page, id },
         headers,
       }),
       providesTags: [{ type: 'Service', id: 'LIST' }],
@@ -70,7 +80,7 @@ export const serviceApi = baseApiWithTags.injectEndpoints({
 
 export const {
   useGetServiceQuery,
-  useGetServicesQuery,
+  useLazyGetServicesQuery,
   useCreateServiceMutation,
   useDeleteServicesMutation,
   useUpdateServiceMutation,

@@ -1,11 +1,11 @@
 import React, { FC, useRef, useState } from 'react'
 import { IoIosArrowDropdown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { CSSTransition } from 'react-transition-group'
 import { useAuth } from '@hooks/useAuth'
 import { ISerivce } from '@interfaces/repair/service.interface'
 import cl from './DetailPriceList.module.scss'
+import customToast from '@utils/customToast'
 
 interface IProps {
   services: ISerivce[]
@@ -21,7 +21,7 @@ const DetailPriceList: FC<IProps> = ({ services }) => {
 
   const onClickOrder = (id: number) => {
     if (!isAuth) {
-      toast.error('Войдите в аккаунт')
+      customToast.error('Войдите в аккаунт')
       return
     }
 
@@ -76,7 +76,7 @@ const DetailPriceList: FC<IProps> = ({ services }) => {
                   <div className='flex gap-[20px] pr-[20px]'>
                     <div className={cl.prices__container}>
                       {el.prices.map((el, idx) => (
-                        <p key={idx}>{el}</p>
+                        <p key={idx}>{el} руб</p>
                       ))}
                     </div>
                     <button

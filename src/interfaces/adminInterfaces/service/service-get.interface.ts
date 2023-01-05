@@ -1,7 +1,7 @@
 export interface ServiceGetResponse {
   id: number
   title: string
-  prices: string[]
+  prices: number[]
   updatedAt: string
   createdAt: string
   _count: {

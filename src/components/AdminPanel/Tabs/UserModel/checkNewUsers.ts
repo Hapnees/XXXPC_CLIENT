@@ -1,5 +1,4 @@
-import { IUserUpdate } from '@interfaces/adminInterfaces/user-update.interface'
-import { rolesConvertReverse } from '@utils/roles.convert'
+import { IUserUpdate } from '@interfaces/adminInterfaces/user/user-update.interface'
 
 export const checkNewUsers = (
   correctNewUsersArray: IUserUpdate[],
@@ -12,8 +11,8 @@ export const checkNewUsers = (
 ) => {
   if (correctNewUsersArray.length) {
     const correctNewUsers = correctNewUsersArray.map(user => {
-      const { roleView, ...correctUser } = user
-      const roleNew = rolesConvertReverse(roleView)
+      const { roleView, role, ...correctUser } = user
+      const roleNew = role
 
       if (!correctUser.phone) delete correctUser.phone
       if (!correctUser.updatedAt) delete correctUser.updatedAt

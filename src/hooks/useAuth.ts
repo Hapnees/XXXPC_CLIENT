@@ -11,11 +11,17 @@ export const useAuth = (role: Roles = Roles.USER) => {
   } = useAppSelector(state => state.auth)
 
   const result = useMemo(() => {
-    const result = !!(accessToken && refreshToken)
-    const isValidRole = userRole !== role || role === Roles.ADMIN
+    const isExistTokens = !!accessToken && !!refreshToken
+    if (isExistTokens && (userRole === role || userRole === Roles.ADMIN))
+      return true
 
-    return result && isValidRole
+    return false
   }, [accessToken, userRole])
 
   return result
 }
+
+//  const result = !!(accessToken && refreshToken)
+//  const isValidRole = userRole !== role || role === Roles.ADMIN
+
+//  return result && isValidRole

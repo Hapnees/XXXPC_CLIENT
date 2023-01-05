@@ -1,9 +1,15 @@
-import { IOrderUpdate } from '@interfaces/adminInterfaces/order-update.interface'
-import { OrdersGetResponse } from '../interfaces/adminInterfaces/orders-get.interface'
-import { OrderCreateResponse } from '../interfaces/order/order-create-response.interface'
-import { OrderGetResponse } from '../interfaces/order/order-get-response.interface'
-import { IOrderForm } from '../interfaces/order/order.interface'
+import {
+  OrdersGetResponse,
+  IOrderUpdate,
+} from '@interfaces/adminInterfaces/order'
+import {
+  IOrderForm,
+  OrderCreateResponse,
+  OrderGetResponse,
+} from '@interfaces/order'
+import { SortDirect } from '@interfaces/order/order-sort.enum'
 import { baseApi } from './baseApi.api'
+import { OrderStatus } from '@interfaces/adminInterfaces/order'
 
 const baseApiWithTags = baseApi.enhanceEndpoints({ addTagTypes: ['Orders'] })
 
@@ -42,10 +48,24 @@ export const orderApi = baseApiWithTags.injectEndpoints({
       invalidatesTags: [{ type: 'Orders', id: 'LIST' }],
     }),
 
-    getOrders: build.query<OrdersGetResponse[], { id?: number; headers: any }>({
-      query: ({ headers, id }) => ({
+    getOrders: build.query<
+      { data: OrdersGetResponse[]; totalCount: number },
+      {
+        id?: number
+        search?: string
+        st?: string
+        sd?: SortDirect
+        fs?: OrderStatus
+        limit?: number
+        page?: number
+        headers: any
+      }
+    >({
+      query: ({ headers, search, limit = 15, st, sd, fs, page, id }) => ({
         url: 'order/get/admin',
-        params: { id },
+        params: { search, st, sd, fs, id, limit, page },
+        limit,
+        page,
         headers,
       }),
       providesTags: [{ type: 'Orders', id: 'LIST' }],
@@ -63,9 +83,21 @@ export const orderApi = baseApiWithTags.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Orders', id: 'USER_LIST' }],
     }),
-    getOrderByUser: build.query<OrderGetResponse[], any>({
-      query: headers => ({
+    getOrderByUser: build.query<
+      { data: OrderGetResponse[]; totalCount: number },
+      {
+        search?: string
+        limit?: number
+        page?: number
+        st?: string
+        sd?: SortDirect
+        fs?: OrderStatus
+        headers: any
+      }
+    >({
+      query: ({ headers, search, limit = 15, page = 1, st, sd, fs }) => ({
         url: 'order/get',
+        params: { search, limit, page, st, sd, fs },
         headers,
       }),
       providesTags: [{ type: 'Orders', id: 'USER_LIST' }],
@@ -75,8 +107,8 @@ export const orderApi = baseApiWithTags.injectEndpoints({
 
 export const {
   useCreateOrderMutation,
-  useGetOrderByUserQuery,
-  useGetOrdersQuery,
+  useLazyGetOrderByUserQuery,
+  useLazyGetOrdersQuery,
   useOrderUpdateMutation,
   useOrderDeleteMutation,
   useGetNoteQuery,

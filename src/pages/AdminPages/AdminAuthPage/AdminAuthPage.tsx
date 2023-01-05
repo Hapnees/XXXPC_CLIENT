@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { useLoginAdminMutation } from '@api/auth.api'
 import { ILoginForm } from '@components/AuthForms/LoginForm/LoginForm.interface'
 import { AdminAuthField } from '@components/UI/AdminUi/index'
 import { useActions, useAuth } from '@hooks/index'
 import { Roles } from '@interfaces/roles.interface'
 import cl from './AdminAuthPage.module.scss'
+import customToast from '@utils/customToast'
 
 const emailPattern =
   /^(([^<>()[\]\.,;:\s@"]+(\.[^<>()[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -36,7 +36,7 @@ const AdminAuthPage = () => {
   useEffect(() => {
     if (!isAuth) return
 
-    toast.info('Вы уже авторизованы')
+    customToast.info('Вы уже авторизованы')
     setTimeout(() => {
       navigte('/admin')
     }, 1000)

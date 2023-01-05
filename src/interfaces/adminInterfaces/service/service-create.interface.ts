@@ -1,8 +1,8 @@
-import { RepairCardSlug } from './repair-card-slug.enum'
+import { RepairCardSlug } from '../repair-card/repair-card-slug.enum'
 
 export interface IServiceCreate {
   title: string
-  prices: string[]
+  prices: number[]
   repairCardId?: number
   repairCardSlug?: RepairCardSlug
 }

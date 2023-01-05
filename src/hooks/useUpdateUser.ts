@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { toast } from 'react-toastify'
 import { useUpdateProfileMutation } from '@api/user.api'
 import { IUserUpdate } from '@interfaces/user/user-update.interface'
 import {
@@ -8,6 +7,7 @@ import {
   useHeaders,
   useUploadAvatar,
 } from '@hooks/index'
+import customToast from '@utils/customToast'
 
 // Обновляем пользователя
 export const useUpdateUser = (avatar: File | undefined) => {
@@ -22,7 +22,7 @@ export const useUpdateUser = (avatar: File | undefined) => {
   const temp = useCallback(
     (data: IUserUpdate) => {
       if (!id) {
-        toast.error('Пользователь не найден')
+        customToast.error('Пользователь не найден')
         return
       }
 
@@ -32,10 +32,12 @@ export const useUpdateUser = (avatar: File | undefined) => {
       if (avatar) {
         uploadAvatar(data)
       } else {
-        updateUser({ body: data, headers }).then(() => {
-          setAuth({ user: { username: data.username } })
-          toast.success('Профиль успешно обновлён')
-        })
+        updateUser({ body: data, headers })
+          .unwrap()
+          .then(response => {
+            setAuth({ user: { username: data.username } })
+            customToast.success(response.message)
+          })
       }
     },
     [avatar]
@@ -43,3 +45,5 @@ export const useUpdateUser = (avatar: File | undefined) => {
 
   return temp
 }
+
+//#321535

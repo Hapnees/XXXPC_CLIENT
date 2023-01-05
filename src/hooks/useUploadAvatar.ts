@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { toast } from 'react-toastify'
 import { useUploadImageMutation, useUpdateProfileMutation } from '@api/index'
 import { IUserUpdate } from '../interfaces/user/user-update.interface'
 import { useActions, useAppSelector, useHeaders } from '@hooks/index'
+import customToast from '@utils/customToast'
 
 // Загружаем аватарку, обновляем пользователя и сетаем значения в auth
 export const useUploadAvatar = (avatar: File | undefined) => {
@@ -32,9 +32,9 @@ export const useUploadAvatar = (avatar: File | undefined) => {
           user: { username: data.username, avatarPath: data.avatarPath },
         })
 
-        updateUser({ body: data, headers }).then(() =>
-          toast.success('Профиль успешно обновлён')
-        )
+        updateUser({ body: data, headers })
+          .unwrap()
+          .then(response => customToast.success(response.message))
       })
     },
     [avatar]

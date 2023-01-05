@@ -1,4 +1,4 @@
-import { UsersGetResponse } from './users-get.interface'
+import { UsersGetResponse } from './user'
 
 export type AdminUsersGetType = Omit<UsersGetResponse, 'hash' | '_count'>
 

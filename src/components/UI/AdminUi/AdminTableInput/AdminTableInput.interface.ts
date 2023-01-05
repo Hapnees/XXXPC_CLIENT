@@ -3,7 +3,6 @@ import { FieldError } from 'react-hook-form'
 
 interface IAdminTableInput {
   error?: FieldError
-  width: number
 }
 
 type TypeInputPropsField = InputHTMLAttributes<HTMLInputElement> &

@@ -1,18 +1,27 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   useAdminDeleteRepairCardMutation,
-  useAdminGetRepairCardsQuery,
+  useLazyAdminGetRepairCardsQuery,
 } from '@api/repairCard.api'
 import { useHeaders } from '@hooks/useHeaders'
 import { AdminLoader } from '@components/UI/AdminUi/index'
 import mainCl from '../tabs.module.scss'
-import { TypeRepairCardModel } from './fields.type'
 import RepairCardModelRow from './RepairCardModelRow/RepairCardModelRow'
 import RepairCardCreate from './RepairCardCreate/RepairCardCreate'
-import { RepairCardsGetResponse } from '@interfaces/adminInterfaces'
+import { RepairCardsGetResponse } from '@interfaces/adminInterfaces/repair-card'
 import ServiceCreate from '../ServiceModel/ServiceCreate/ServiceCreate'
 import { CreateButton, DeleteButton } from '@components/UI/AdminUi/Buttons'
-import { toast } from 'react-toastify'
+import {
+  RepairCardSlug,
+  RepairCardSlugView,
+} from '@interfaces/adminInterfaces/repair-card/repair-card-slug.enum'
+import SpecialInput from '@components/UI/AdminUi/AdminSpecialInput/SpecialInput'
+import { HiSearch } from 'react-icons/hi'
+import { repairCardMenuTitles } from '../tabs.titles'
+import customToast from '@utils/customToast'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
+import AdminFieldsPopup from '@components/AdminPanel/AdminFieldsPopup/AdminFieldsPopup'
+import Pagination from '@components/AdminPanel/Pagination/Pagination'
 
 export enum CurrentWindowRCM {
   LIST = 'LIST',
@@ -20,38 +29,62 @@ export enum CurrentWindowRCM {
   CREATE_SERVICE = 'CREATE_SERVICE',
 }
 
+const selectData = [
+  { value: RepairCardSlug.PC, label: RepairCardSlugView.PC },
+  { value: RepairCardSlug.LAPTOP, label: RepairCardSlugView.LAPTOP },
+  { value: RepairCardSlug.PHONE, label: RepairCardSlugView.PHONE },
+]
+
 const RepairCardModel = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const searchRef = useRef<HTMLInputElement>(null)
   const [checkList, setCheckList] = useState<number[]>([])
 
   const headers = useHeaders()
   const [deleteCard] = useAdminDeleteRepairCardMutation()
 
-  const {
-    data: cardsData,
-    isLoading,
-    refetch,
-  } = useAdminGetRepairCardsQuery(headers)
+  const [getRepairCards, { data: cardsData, isLoading }] =
+    useLazyAdminGetRepairCardsQuery()
 
-  const slugs = cardsData?.map(el => el.slug)
+  const getRepairCardsWithParams = useCallback(
+    () =>
+      getRepairCards({
+        headers,
+        search: searchRef.current?.value,
+        page: currentPage,
+      }),
+    [getRepairCards]
+  )
 
-  const checkRef = useRef<HTMLLIElement>(null)
-  const idRef = useRef<HTMLLIElement>(null)
-  const iconRef = useRef<HTMLLIElement>(null)
-  const titleRef = useRef<HTMLLIElement>(null)
-  const slugRef = useRef<HTMLLIElement>(null)
-  const updatedAtRef = useRef<HTMLLIElement>(null)
-  const createdAtRef = useRef<HTMLLIElement>(null)
-  const servicesRef = useRef<HTMLLIElement>(null)
+  const slugs = cardsData?.data.map(el => el.slug)
 
   const [currentCard, setCurrentCard] = useState<RepairCardsGetResponse>()
   const [currentWindow, setCurrentWindow] = useState<CurrentWindowRCM>(
     CurrentWindowRCM.LIST
   )
-  const [widths, setWidths] = useState<TypeRepairCardModel>(
-    {} as TypeRepairCardModel
+
+  const currentSlugs = selectData?.filter(
+    el => !slugs?.includes(el.value) || el.value === currentCard?.slug
+  )
+
+  const [checkFields, setCheckFields] = useState<IFieldMenuElement[]>(
+    repairCardMenuTitles
+      .map(el => ({ title: el, checked: true }))
+      .map(el => ({
+        ...el,
+        checked:
+          el.title === 'Дата регистрации' || el.title === 'Дата обновления'
+            ? false
+            : true,
+      }))
   )
 
   const onClickCreate = () => {
+    if (!currentSlugs || !currentSlugs.length) {
+      customToast.error('Все категории заняты!')
+      return
+    }
+
     setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
     setCurrentCard(undefined)
   }
@@ -59,22 +92,20 @@ const RepairCardModel = () => {
   const onClickDelete = () => {
     deleteCard({ body: checkList, headers })
       .unwrap()
-      .then(response => toast.success(response.message))
+      .then(response => customToast.success(response.message))
   }
 
-  // Сетаем длины элементов
-  useLayoutEffect(() => {
-    setWidths({
-      check: checkRef.current?.offsetWidth || 0,
-      id: idRef.current?.offsetWidth || 0,
-      title: titleRef.current?.offsetWidth || 0,
-      slug: slugRef.current?.offsetWidth || 0,
-      icon: iconRef.current?.offsetWidth || 0,
-      updatedAt: updatedAtRef.current?.offsetWidth || 0,
-      createdAt: createdAtRef.current?.offsetWidth || 0,
-      services: servicesRef.current?.offsetWidth || 0,
-    })
-  }, [cardsData, currentWindow])
+  // Получаем данные о карточках
+  useEffect(() => {
+    getRepairCardsWithParams()
+  }, [])
+
+  const onKeyDownEnter = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      getRepairCardsWithParams()
+    }
+  }
 
   return (
     <>
@@ -82,8 +113,8 @@ const RepairCardModel = () => {
         <RepairCardCreate
           id={currentCard?.id || 0}
           setCurrentWindow={setCurrentWindow}
-          repairCardModelRefetch={refetch}
-          slugs={slugs || []}
+          repairCardModelRefetch={getRepairCardsWithParams}
+          slugs={currentSlugs || []}
         />
       ) : currentWindow === CurrentWindowRCM.CREATE_SERVICE ? (
         <ServiceCreate
@@ -94,40 +125,68 @@ const RepairCardModel = () => {
       ) : isLoading ? (
         <AdminLoader />
       ) : (
-        <div>
-          <div className='flex gap-2 mb-2 ml-2'>
-            <p className='text-[20px]'>Карточки ремонта</p>
-            <CreateButton onClickCreate={onClickCreate} />
-            <DeleteButton onClickDelete={onClickDelete} />
-          </div>
-          <div className={mainCl.container__menu}>
-            <ul className={mainCl.top__menu}>
-              <li ref={checkRef}>C</li>
-              <li ref={idRef}>№</li>
-              <li ref={titleRef}>Название</li>
-              <li ref={slugRef}>Слаг</li>
-              <li ref={iconRef}>Иконка</li>
-              <li ref={updatedAtRef}>Дата обновления</li>
-              <li ref={createdAtRef}>Дата регистрации</li>
-              <li ref={servicesRef}>Услуги</li>
-            </ul>
-            <ul className={mainCl.content__menu}>
-              {cardsData?.map(card => (
-                <li key={card.id}>
-                  <RepairCardModelRow
-                    setCurrentCard={setCurrentCard}
-                    viewCreateWindow={() =>
-                      setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
-                    }
-                    card={card}
-                    widths={widths}
-                    checkList={checkList}
-                    setCheckList={setCheckList}
+        <div className='flex flex-col items-center'>
+          <div>
+            <div className='flex items-center gap-2 mb-2 ml-2'>
+              <div className='flex gap-2'>
+                <p className='text-[20px]'>Карточки ремонта</p>
+                <CreateButton onClickCreate={onClickCreate} />
+                <DeleteButton onClickDelete={onClickDelete} />
+              </div>
+              <div className='flex items-center gap-2'>
+                <div className='w-[400px]'>
+                  <SpecialInput
+                    placeholder='Поиск карточки'
+                    ref={searchRef}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      if (searchRef.current?.value)
+                        searchRef.current.value = event.target.value
+                    }}
+                    onKeyDown={event => onKeyDownEnter(event)}
                   />
-                </li>
-              ))}
-            </ul>
+                </div>
+                <HiSearch
+                  className='bg-[#434e62] w-[70px] h-[35px] p-1 rounded-md cursor-pointer'
+                  onClick={getRepairCardsWithParams}
+                />
+              </div>
+              {/* <AdminFieldsPopup
+                checkFields={checkFields}
+                setCheckFields={setCheckFields}
+              /> */}
+            </div>
+            <div className={mainCl.container__menu}>
+              <ul className={mainCl.top__menu}>
+                {checkFields
+                  .filter(el => el.checked)
+                  .map((el, idx) => (
+                    <li key={idx}>{el.title}</li>
+                  ))}
+              </ul>
+              <ul className={mainCl.content__menu}>
+                {cardsData?.data.map(card => (
+                  <li key={card.id}>
+                    <RepairCardModelRow
+                      checkFieldsList={checkFields}
+                      setCurrentCard={setCurrentCard}
+                      viewCreateWindow={() =>
+                        setCurrentWindow(CurrentWindowRCM.CREATE_MODEL)
+                      }
+                      card={card}
+                      checkList={checkList}
+                      setCheckList={setCheckList}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalCount={cardsData?.totalCount || 0}
+          />
         </div>
       )}
     </>

@@ -1,4 +1,4 @@
-import { IRepairCardCreate } from '@interfaces/adminInterfaces/repair-card-create.interface'
+import { IRepairCardCreate } from '@interfaces/adminInterfaces/repair-card'
 
 export const makeMenusForRequest = (repairCard: IRepairCardCreate) => {
   const result = repairCard.menus.map(menu => {

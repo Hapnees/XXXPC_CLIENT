@@ -1,6 +1,8 @@
-import { IRepairCardCreate } from '@interfaces/adminInterfaces/repair-card-create.interface'
-import { RepairCardSlug } from '@interfaces/adminInterfaces/repair-card-slug.enum'
-import { RepairCardsGetResponse } from '@interfaces/adminInterfaces/repair-cards-get.interface'
+import {
+  IRepairCardCreate,
+  RepairCardSlug,
+  RepairCardsGetResponse,
+} from '@interfaces/adminInterfaces/repair-card'
 import { RepairCardResponse } from '../interfaces/repair/repair-card.interface'
 import { baseApi } from './baseApi.api'
 
@@ -47,9 +49,13 @@ const repairApi = baseApiWithTags.injectEndpoints({
       }),
     }),
 
-    adminGetRepairCards: build.query<RepairCardsGetResponse[], any>({
-      query: headers => ({
+    adminGetRepairCards: build.query<
+      { data: RepairCardsGetResponse[]; totalCount: number },
+      { search?: string; limit?: number; page?: number; headers: any }
+    >({
+      query: ({ headers, search, limit = 12, page }) => ({
         url: 'repair/get',
+        params: { search, limit, page },
         headers,
       }),
       providesTags: [{ type: 'RepairCards', id: 'LIST_ALL' }],
@@ -57,7 +63,10 @@ const repairApi = baseApiWithTags.injectEndpoints({
 
     adminUpdateRepairCard: build.mutation<
       { message: string },
-      { body: Partial<IRepairCardCreate & { id: number }>; headers: any }
+      {
+        body: Partial<IRepairCardCreate & { id: number; iconPath?: string }>
+        headers: any
+      }
     >({
       query: ({ body, headers }) => ({
         url: 'repair/update',
@@ -65,7 +74,6 @@ const repairApi = baseApiWithTags.injectEndpoints({
         body,
         headers,
       }),
-      // invalidatesTags: [{ type: 'RepairCards', id: 'LIST' }],
     }),
 
     adminCreateRepairCard: build.mutation<
@@ -78,7 +86,7 @@ const repairApi = baseApiWithTags.injectEndpoints({
         body,
         headers,
       }),
-      // invalidatesTags: [{ type: 'RepairCards', id: 'LIST' }],
+      // invalidatesTags: [{ type: 'RepairCards', id: 'LIST_ALL' }],
     }),
     getRepairCard: build.query<RepairCardResponse, string>({
       query: slug => ({
@@ -90,7 +98,7 @@ const repairApi = baseApiWithTags.injectEndpoints({
 
 export const {
   useGetRepairCardQuery,
-  useAdminGetRepairCardsQuery,
+  useLazyAdminGetRepairCardsQuery,
   useAdminUpdateRepairCardMutation,
   useGetRepairCardsForPageQuery,
   useAdminCreateRepairCardMutation,

@@ -1,20 +1,23 @@
 import { AdminTableInput, AdminTableSelect } from '@components/UI/AdminUi/index'
 import React, { FC } from 'react'
 import { FieldErrors, UseFormRegister } from 'react-hook-form'
-import {
-  IUserUpdate,
-  UsersGetResponse,
-} from '@interfaces/adminInterfaces/index'
+import { IUserUpdate, UsersGetResponse } from '@interfaces/adminInterfaces/user'
 import mainCl from '../../tabs.module.scss'
-import { UserModelWidths } from '../fields.type'
+import { dateFormat } from '@utils/date.format'
+import { IFieldMenuElement } from '@interfaces/adminInterfaces/fieldMenuElement.interface'
+
+enum Online {
+  ONLINE = 'Онлайн',
+  OFFLINE = 'Оффлайн',
+}
 
 interface IProps {
   register: UseFormRegister<IUserUpdate[]>
   user: UsersGetResponse
   errors: FieldErrors<IUserUpdate[]>
-  widths: UserModelWidths
   setCheckList: React.Dispatch<React.SetStateAction<number[]>>
   checkList: number[]
+  checkFieldsList: IFieldMenuElement[]
   onClickUserOrders: () => void
 }
 
@@ -25,10 +28,10 @@ const UserModelRow: FC<IProps> = ({
   register,
   user,
   errors,
-  widths,
   setCheckList,
   checkList,
   onClickUserOrders,
+  checkFieldsList,
 }) => {
   const value = checkList.includes(user.id)
 
@@ -50,9 +53,8 @@ const UserModelRow: FC<IProps> = ({
         }}
       >
         <li
-          style={{ width: widths.check }}
           onClick={onChangeCheck}
-          className={mainCl.not_input}
+          className={`${mainCl.not_input} ${mainCl.short__element}`}
         >
           <input
             type='checkbox'
@@ -61,132 +63,123 @@ const UserModelRow: FC<IProps> = ({
             onChange={onChangeCheck}
           />
         </li>
-        <li style={{ width: widths.id }}>
-          <AdminTableInput
-            type='text'
-            placeholder='№'
-            width={widths.id}
-            {...register(`${user.id}.id`, {
-              required: 'Обязательное поле',
-            })}
-            error={errors[user.id]?.id}
-          />
+        <li className={mainCl.short__element}>
+          <p>{user.id}</p>
         </li>
-        <li style={{ width: widths.username }}>
-          <AdminTableInput
-            type='text'
-            placeholder='Имя пользователя'
-            width={widths.username}
-            {...register(`${user.id}.username`, {
-              required: 'Обязательное поле',
-              minLength: {
-                value: 3,
-                message: 'Минимум 3 символа',
-              },
-            })}
-            error={errors[user.id]?.username}
-          />
-        </li>
-        <li style={{ width: widths.email }}>
-          <AdminTableInput
-            type='email'
-            placeholder='Почта'
-            width={widths.email}
-            {...register(`${user.id}.email`, {
-              required: 'Обязательное поле',
-              pattern: {
-                value: emailPattern,
-                message: 'Некорректный email',
-              },
-            })}
-            error={errors[user.id]?.email}
-          />
-        </li>
-        <li style={{ width: widths.role }} className={mainCl.not_input}>
-          <AdminTableSelect {...register(`${user.id}.roleView`)} />
-        </li>
-        <li style={{ width: widths.hash }} className={mainCl.zero}>
-          <AdminTableInput
-            type='text'
-            placeholder='Пароль'
-            width={widths.hash}
-            {...register(`${user.id}.password`, {
-              required: 'Обязательное поле',
-              minLength: {
-                value: 6,
-                message: 'Минимум 6 символа',
-              },
-            })}
-            error={errors[user.id]?.password}
-          />
-        </li>
-        <li style={{ width: widths.hashedRt }} className={mainCl.zero}>
-          <AdminTableInput
-            type='text'
-            placeholder='Токен обновления'
-            width={widths.hashedRt}
-            {...register(`${user.id}.hashedRt`)}
-            error={errors[user.id]?.hashedRt}
-          />
-        </li>
-        <li style={{ width: widths.avatarPath }} className={mainCl.zero}>
-          <AdminTableInput
-            type='text'
-            placeholder='Аватарка'
-            width={widths.avatarPath}
-            {...register(`${user.id}.avatarPath`)}
-            error={errors[user.id]?.avatarPath}
-          />
-        </li>
-        <li style={{ width: widths.phone }} className={mainCl.zero}>
-          <AdminTableInput
-            type='text'
-            placeholder='№ телефона'
-            width={widths.phone}
-            {...register(`${user.id}.phone`)}
-            error={errors[user.id]?.phone}
-          />
-        </li>
-        <li
-          style={{
-            width: widths.orders,
-          }}
-          className={mainCl.special}
-          onClick={onClickUserOrders}
-        >
-          <p
+        {checkFieldsList.find(el => el.title === 'Имя пользователя')
+          ?.checked && (
+          <li>
+            <AdminTableInput
+              type='text'
+              placeholder='Имя пользователя'
+              {...register(`${user.id}.username`, {
+                required: 'Обязательное поле',
+                minLength: {
+                  value: 3,
+                  message: 'Минимум 3 символа',
+                },
+              })}
+              error={errors[user.id]?.username}
+            />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Почта')?.checked && (
+          <li>
+            <AdminTableInput
+              type='email'
+              placeholder='Почта'
+              {...register(`${user.id}.email`, {
+                required: 'Обязательное поле',
+                pattern: {
+                  value: emailPattern,
+                  message: 'Некорректный email',
+                },
+              })}
+              error={errors[user.id]?.email}
+            />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Роль')?.checked && (
+          <li className={mainCl.not_input}>
+            <AdminTableSelect {...register(`${user.id}.roleView`)} />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Пароль')?.checked && (
+          <li>
+            <AdminTableInput
+              type='text'
+              placeholder='Пароль'
+              {...register(`${user.id}.password`, {
+                required: 'Обязательное поле',
+                minLength: {
+                  value: 6,
+                  message: 'Минимум 6 символа',
+                },
+              })}
+              error={errors[user.id]?.password}
+            />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Онлайн')?.checked && (
+          <li
+            className={mainCl.not_input}
             style={{
-              backgroundColor: value ? 'rgba(135, 30, 30, 0.505)' : '#2d3748',
+              backgroundColor: user.isOnline ? 'rgba(63, 205, 50, 0.615)' : '',
             }}
           >
-            {user._count?.orders}
-          </p>
-          <p
-            style={{
-              backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : '#475264',
-            }}
-          >
-            Заказы
-          </p>
-        </li>
-        <li style={{ width: widths.updatedAt }} className={mainCl.zero}>
-          <AdminTableInput
-            type='text'
-            placeholder='Дата обновления'
-            width={widths.updatedAt}
-            {...register(`${user.id}.updatedAt`)}
-            error={errors[user.id]?.updatedAt}
-          />
-        </li>
-        <li style={{ width: widths.createdAt }}>
-          <AdminTableInput
-            type='text'
-            placeholder='Дата регистрации'
-            width={widths.createdAt}
-            {...register(`${user.id}.createdAt`)}
-            error={errors[user.id]?.createdAt}
-          />
-        </li>
+            <p>{user.isOnline ? Online.ONLINE : Online.OFFLINE}</p>
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Аватарка')?.checked && (
+          <li>
+            <AdminTableInput
+              type='text'
+              placeholder='Аватарка'
+              {...register(`${user.id}.avatarPath`)}
+              error={errors[user.id]?.avatarPath}
+            />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === '№ телефона')?.checked && (
+          <li>
+            <AdminTableInput
+              type='text'
+              placeholder='№ телефона'
+              {...register(`${user.id}.phone`)}
+              error={errors[user.id]?.phone}
+            />
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Заказы')?.checked && (
+          <li className={mainCl.special} onClick={onClickUserOrders}>
+            <p
+              style={{
+                backgroundColor: value ? 'rgba(135, 30, 30, 0.505)' : '#2d3748',
+              }}
+            >
+              {user._count?.orders}
+            </p>
+            <p
+              style={{
+                backgroundColor: value ? 'rgba(177, 39, 39, 0.505)' : '#475264',
+              }}
+            >
+              Заказы
+            </p>
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Дата обновления')
+          ?.checked && (
+          <li className={mainCl.date__element}>
+            <p>{dateFormat(user.updatedAt, { withTime: true })}</p>
+          </li>
+        )}
+        {checkFieldsList.find(el => el.title === 'Дата регистрации')
+          ?.checked && (
+          <li className={mainCl.date__element}>
+            <p>{dateFormat(user.createdAt, { withTime: true })}</p>
+          </li>
+        )}
       </ul>
     </div>
   )
