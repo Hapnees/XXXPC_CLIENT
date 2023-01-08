@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { AdminLoader } from '@components/UI/AdminUi/index'
 import Loader from './components/UI/Loader/Loader'
 import MainLayout from './layouts/MainLayout/MainLayout'
 import ConfirmPage from './pages/ConfirmPage/ConfirmPage'
@@ -27,25 +26,6 @@ const MyOrdersPage = React.lazy(
   () =>
     import(
       /* webpackChunkName: "MyOrdersPage" */ './pages/MyOrdersPage/MyOrdersPage'
-    )
-)
-
-const AdminPage = React.lazy(
-  () =>
-    import(/* webpackChunkName: "AdminPage" */ './pages/AdminPages/AdminPage')
-)
-
-const AdminPanelLayout = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "AdminPanelLayout" */ './layouts/AdminPanelLayout/AdminPanelLayout'
-    )
-)
-
-const AdminAuthPage = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "AdminAuthPage" */ './pages/AdminPages/AdminAuthPage/AdminAuthPage'
     )
 )
 
@@ -82,31 +62,6 @@ function App() {
           }
         />
         <Route path='order/:id' element={<OrderPage />} />
-      </Route>
-      <Route
-        path='admin'
-        element={
-          <Suspense fallback=<AdminLoader />>
-            <AdminPanelLayout />
-          </Suspense>
-        }
-      >
-        <Route
-          path=''
-          element={
-            <Suspense fallback={<AdminLoader />}>
-              <AdminPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path='auth'
-          element={
-            <Suspense fallback={<AdminLoader />}>
-              <AdminAuthPage />
-            </Suspense>
-          }
-        />
       </Route>
     </Routes>
   )

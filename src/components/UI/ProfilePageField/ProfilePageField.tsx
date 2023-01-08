@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { AuthField } from '../AdminUi'
+import { AuthField } from '../AuthField/AuthField'
 import { IProfilePageField } from './ProfilePageField.interface'
 import cl from './ProfilePageField.module.scss'
 

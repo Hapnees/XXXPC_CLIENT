@@ -1,4 +1,4 @@
-import { IRepairCardMenu } from '@interfaces/adminInterfaces/repair-card'
+import { IRepairCardMenu } from './repair-card-menu.interface'
 import { ISerivce } from './service.interface'
 
 export interface RepairCardResponse {

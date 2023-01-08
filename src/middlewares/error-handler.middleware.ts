@@ -3,8 +3,6 @@ import {
   Middleware,
   MiddlewareAPI,
 } from '@reduxjs/toolkit'
-import ErrorWindow from '../components/UI/ErrorWindow/ErrorWindow'
-import { AdminError } from '@interfaces/adminInterfaces/error.interface'
 import { IError } from '@interfaces/error.interface'
 import customToast from '@utils/customToast'
 
@@ -30,14 +28,7 @@ export const ErrorHandler: Middleware =
           }
         }
       } else {
-        const errors = action.payload.data as AdminError[]
-        if (errors)
-          customToast.error(ErrorWindow({ errors }), {
-            style: { width: '450px' },
-          })
-        else {
-          customToast.error('Ошибка')
-        }
+        customToast.error('Ошибка')
       }
     }
     return next(action)

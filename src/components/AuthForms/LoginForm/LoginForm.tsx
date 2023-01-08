@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AuthField } from '@components/UI/AdminUi'
+import { AuthField } from '@components/UI/AuthField/AuthField'
 import cl from './LoginForm.module.scss'
 import { BsGoogle } from 'react-icons/bs'
 import { SubmitHandler, useForm } from 'react-hook-form'

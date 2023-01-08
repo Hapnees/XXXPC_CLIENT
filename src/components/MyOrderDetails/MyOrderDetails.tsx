@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { OrderStatusView } from '@interfaces/adminInterfaces/order/order-status.enum'
+import { OrderStatusView } from '@interfaces/order/order-status.enum'
 import { OrderGetResponse } from '@interfaces/order/order-get-response.interface'
 import { IoClose } from 'react-icons/io5'
 import cl from './MyOrderDetails.module.scss'

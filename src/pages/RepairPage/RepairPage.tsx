@@ -1,7 +1,7 @@
+import React from 'react'
 import { useGetRepairCardsForPageQuery } from '@api/repairCard.api'
 import RepairCard from '@components/RepairCard/RepairCard'
 import Loader from '@components/UI/Loader/Loader'
-import React from 'react'
 import cl from './RepairPage.module.scss'
 
 const RepairPage = () => {

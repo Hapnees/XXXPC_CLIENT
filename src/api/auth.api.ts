@@ -34,13 +34,6 @@ const authApi = baseApi.injectEndpoints({
         headers,
       }),
     }),
-    loginAdmin: build.mutation<IAuthResponse, ILoginForm>({
-      query: body => ({
-        url: 'auth/admin/login',
-        method: 'POST',
-        body,
-      }),
-    }),
   }),
 })
 
@@ -49,5 +42,4 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRefreshTokensMutation,
-  useLoginAdminMutation,
 } = authApi

@@ -7,7 +7,7 @@ import cl from './MyOrdersPage.module.scss'
 import {
   OrderStatus,
   OrderStatusView,
-} from '@interfaces/adminInterfaces/order/order-status.enum'
+} from '@interfaces/order/order-status.enum'
 import ModalWindow from '@components/UI/ModalWindow/ModalWindow'
 import MyOrderDetails from '@components/MyOrderDetails/MyOrderDetails'
 import { CSSTransition } from 'react-transition-group'

@@ -3,22 +3,6 @@ import { baseApi } from './baseApi.api'
 
 export const mediaApi = baseApi.injectEndpoints({
   endpoints: build => ({
-    adminUploadImage: build.mutation<
-      { url: string },
-      { data: IUploadImage; headers: any }
-    >({
-      query: ({ data: { image, id, folder }, headers }) => ({
-        url: '/media/upload/icon/admin',
-        method: 'POST',
-        params: {
-          id,
-          folder,
-        },
-        headers,
-        body: image,
-      }),
-    }),
-
     uploadImage: build.mutation<
       { url: string },
       { data: IUploadImage; headers: any }
@@ -37,4 +21,4 @@ export const mediaApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useUploadImageMutation, useAdminUploadImageMutation } = mediaApi
+export const { useUploadImageMutation } = mediaApi

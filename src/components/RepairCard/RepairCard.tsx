@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { RepairCardsGetResponse } from '@interfaces/adminInterfaces/repair-card'
+import { RepairCardsGetResponse } from '@interfaces/repair/repair-cards-get.interface'
 import { BsGearFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import cl from './RepairCard.module.scss'
