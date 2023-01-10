@@ -15,13 +15,13 @@ export const useRefreshTokens = () => {
 
     refreshTokens(headers)
       .unwrap()
-      .then(response =>
+      .then(response => {
         setAuth({
           accessToken: response.tokens.accessToken,
           refreshToken: response.tokens.refreshToken,
           user: { role: response.role },
         })
-      )
+      })
   }, [])
 
   // Обновляем токены каждые 14 минут

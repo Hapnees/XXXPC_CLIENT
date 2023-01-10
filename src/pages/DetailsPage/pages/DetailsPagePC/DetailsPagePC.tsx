@@ -4,6 +4,7 @@ import RepairCardMenu from '@components/RepairCardMenu/RepairCardMenu'
 import DetailsLayout from '@layouts/DetailsLayout/DetailsLayout'
 import { deffects } from './menus'
 import { ISerivce } from '@interfaces/repair/service.interface'
+import img from '../../../../assets/img/PC.png'
 
 const title = 'Ремонт компьютеров и их комплектующих'
 const body = (
@@ -33,7 +34,7 @@ interface IProrps {
 
 const DetailsPagePC: FC<IProrps> = ({ services }) => {
   return (
-    <DetailsLayout title={title} body={body} img=''>
+    <DetailsLayout title={title} body={body} img={img}>
       <DetailPriceList services={services} />
 
       <RepairCardMenu title={repairCardMenuTitle} array={deffects} />

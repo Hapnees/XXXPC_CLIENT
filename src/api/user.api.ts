@@ -36,6 +36,18 @@ const userApi = apiWithTags.injectEndpoints({
         headers,
       }),
     }),
+
+    updateOnline: build.mutation<
+      { message: string },
+      { isOnline: boolean; headers: any }
+    >({
+      query: ({ isOnline, headers }) => ({
+        url: 'user/online',
+        method: 'POST',
+        body: { isOnline },
+        headers,
+      }),
+    }),
   }),
 })
 
@@ -43,4 +55,5 @@ export const {
   useUpdateProfileMutation,
   useLazyGetProfileQuery,
   useDeleteUsersMutation,
+  useUpdateOnlineMutation,
 } = userApi

@@ -93,8 +93,6 @@ const MyOrdersPage = () => {
 
   // Получаем заказы
   useEffect(() => {
-    if (sortTitle !== undefined && sortDirect === undefined) return
-
     getOrdersWithParams()
   }, [currentPage, sortDirect, filterStatus])
 

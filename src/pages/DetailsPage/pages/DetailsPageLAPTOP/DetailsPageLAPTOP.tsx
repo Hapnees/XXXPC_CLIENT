@@ -1,7 +1,8 @@
+import React, { FC } from 'react'
 import DetailPriceList from '@components/DetailPriceList/DetailPriceList'
 import { ISerivce } from '@interfaces/repair/service.interface'
 import DetailsLayout from '@layouts/DetailsLayout/DetailsLayout'
-import React, { FC } from 'react'
+import image from '../../../../assets/img/IMAGE_LAPTOP.png'
 
 interface IProps {
   services: ISerivce[]
@@ -34,7 +35,7 @@ const body = (
 
 const DetailsPageLAPTOP: FC<IProps> = ({ services }) => {
   return (
-    <DetailsLayout title={title} body={body} img=''>
+    <DetailsLayout title={title} body={body} img={image}>
       <DetailPriceList services={services} />
     </DetailsLayout>
   )

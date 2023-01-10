@@ -10,12 +10,12 @@ export const ErrorHandler: Middleware =
   (api: MiddlewareAPI) => next => action => {
     if (isRejectedWithValue(action)) {
       const errorMessage = (action.payload as IError).data
-      if (errorMessage.messages) {
+      if (errorMessage?.messages) {
         const currentError = errorMessage.messages
         currentError.forEach(message => {
           customToast.error(message || 'Ошибка')
         })
-      } else if (errorMessage.message) {
+      } else if (errorMessage?.message) {
         const currentError = action.payload.data.message
         if (currentError) {
           if (typeof currentError === 'string') {
