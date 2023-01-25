@@ -1,0 +1,80 @@
+.wrapper {
+	@apply flex flex-col;
+	height: 560px;
+	width: 480px;
+	border: 1px solid rgba(220, 121, 205, 0.621);
+	border-radius: 6px;
+}
+
+.header {
+	@apply py-[10px];
+	color: rgb(255, 210, 248);
+	font-weight: 500;
+	font-size: 18px;
+	letter-spacing: 0.2px;
+	border-bottom: 1px solid rgba(220, 121, 205, 0.621);
+	background-color: rgba(154, 83, 143, 0.123);
+}
+
+.messages {
+	@apply flex flex-col gap-2 my-4;
+	height: 420px;
+	overflow: auto;
+}
+
+.master__message {
+	@apply px-4 py-2;
+	background-color: rgba(125, 40, 112, 0.614);
+	border-radius: 6px;
+	margin-bottom: 5px;
+}
+
+.user__message {
+	@apply px-4 py-2;
+	border: 1px solid rgba(123, 37, 112, 0.356);
+	background-color: rgba(98, 31, 89, 0.442);
+	border-radius: 6px;
+	margin-bottom: 5px;
+}
+
+.container__message {
+	@apply flex items-center justify-between py-2 px-3;
+	border-top: 1px solid rgba(220, 121, 205, 0.621);
+	height: 60px;
+}
+
+.input__message {
+	@apply px-2 py-[7px];
+	resize: none;
+	color: rgb(253, 221, 249);
+	background-color: rgba(63, 34, 59, 0.123);
+	height: 100%;
+	width: 88%;
+	border: 1px solid rgba(147, 81, 137, 0.621);
+	border-radius: 6px;
+	transition: background-color 0.3s;
+
+	&::placeholder {
+		color: rgba(194, 154, 189, 0.743);
+	}
+
+	&:focus,
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.123);
+	}
+}
+
+.icon__send {
+	cursor: pointer;
+	padding: 10px;
+	height: 45px;
+	width: 45px;
+	color: rgb(253, 221, 249);
+	background-color: rgba(133, 65, 124, 0.332);
+	border-radius: 100%;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: rgba(174, 84, 162, 0.423);
+	}
+}

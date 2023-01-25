@@ -3,8 +3,20 @@
 	scrollbar-width: 2px;
 }
 
+::-webkit-scrollbar {
+	background-color: #95558c;
+	box-shadow: 0 0 5px #f252da;
+	width: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #d265c4;
+}
+
 .card {
-	@apply flex flex-col items-center border w-[400px] h-[570px] px-4 pb-4 pt-2;
+	@apply flex flex-col items-center px-4 pb-4 pt-2;
+	width: 400px;
+	height: 570px;
 
 	color: #e4a6db;
 	background-color: #923d8520;
@@ -12,14 +24,13 @@
 
 	border: 1px solid #c672b9;
 	border-radius: 10px;
-
 }
 
 .card__top__content {
 	@apply flex gap-4 items-center justify-center py-2;
 	color: #ffc8f7;
 
-	>p {
+	> p {
 		@apply text-[20px];
 	}
 }
@@ -37,7 +48,6 @@
 	color: #ffcbf7;
 }
 
-
 .description {
 	@apply text-center py-2;
 	color: #dda8d5;
@@ -45,12 +55,12 @@
 	display: -webkit-box;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
-	overflow: auto
+	overflow: auto;
 }
 
 .button {
 	@apply text-[18px] px-12 py-2 duration-300;
-	color: #00FFC6;
+	color: #00ffc6;
 	background-color: #1c5f515f;
 	border: 1px solid #31ac915f;
 	border-radius: 5px;
@@ -58,14 +68,4 @@
 	&:hover {
 		background-color: #267a685f;
 	}
-}
-
-::-webkit-scrollbar {
-	background-color: #95558c;
-	box-shadow: 0 0 5px #f252da;
-	width: 2px;
-}
-
-::-webkit-scrollbar-thumb {
-	background-color: #d265c4;
 }

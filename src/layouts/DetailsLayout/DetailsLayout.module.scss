@@ -8,6 +8,16 @@
 	margin-bottom: 30px;
 }
 
+.img {
+	width: 320px;
+	height: 320px;
+	object-fit: cover;
+	padding: 12px;
+	border: 1px solid rgba(245, 60, 255, 0.293);
+	border-radius: 6px;
+	box-shadow: 0 0 5px rgba(245, 60, 255, 0.293);
+}
+
 .top__body {
 	@apply mt-4;
 	color: #ffe0fa;

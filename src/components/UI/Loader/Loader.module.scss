@@ -8,7 +8,7 @@
 	font-size: 10px;
 }
 
-.rect>div {
+.rect > div {
 	background-color: #a15996;
 	height: 100%;
 	width: 15px;
@@ -21,7 +21,7 @@
 }
 
 .rect .rect3 {
-	animation-delay: -1.0s;
+	animation-delay: -1s;
 }
 
 .rect .rect4 {
@@ -33,7 +33,6 @@
 }
 
 @keyframes sk-stretchdelay {
-
 	0%,
 	40%,
 	100% {
@@ -41,6 +40,6 @@
 	}
 
 	20% {
-		transform: scaleY(1.0);
+		transform: scaleY(1);
 	}
 }

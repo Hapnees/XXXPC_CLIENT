@@ -1,7 +1,18 @@
+$circle_size: 20px;
+
 .wrapper {
 	@apply grid grid-cols-2 px-[175px] grow;
 
 	animation: opacity 1s normal;
+}
+
+.text__over__wrapper {
+	overflow: hidden;
+}
+
+.text__wrapper {
+	display: flex;
+	transition: transform 0.3s;
 }
 
 .text__container {
@@ -23,10 +34,15 @@
 }
 
 .button {
-	@apply border border-transparent bg-light-green text-dark-blue px-[75px] py-[15px] font-semibold uppercase rounded-md;
-	font-family: Roboto;
-	font-size: 20px;
+	@apply text-dark-blue px-[75px] py-[15px] font-semibold uppercase rounded-md;
+	font-family: Sofia Sans;
+	font-weight: 800;
+	font-size: 23px;
 	letter-spacing: 0.5px;
+	background: #003d3128;
+	border: 1px solid #2fffd2a4;
+	color: #2fffd2d1;
+	transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 }
 
 @keyframes opacity {
@@ -37,4 +53,19 @@
 	to {
 		opacity: 1;
 	}
+}
+
+input[type='radio'] {
+	&:checked + .circle {
+		background-color: rgba(173, 51, 182, 0.619);
+	}
+}
+
+.circle {
+	background-color: rgba(137, 58, 142, 0.5);
+	height: $circle_size;
+	width: $circle_size;
+	border-radius: 100%;
+	cursor: pointer;
+	transition: background-color 0.3s;
 }

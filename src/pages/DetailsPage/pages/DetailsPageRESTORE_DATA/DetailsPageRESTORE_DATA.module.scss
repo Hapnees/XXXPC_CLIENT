@@ -1,0 +1,10 @@
+.menu {
+	@apply flex flex-col gap-4 mt-4;
+	> li {
+		font-size: 20px;
+		> p:first-child {
+			@apply my-2;
+			font-weight: 600;
+		}
+	}
+}

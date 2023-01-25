@@ -1,8 +1,11 @@
 .button {
-	@apply border border-transparent bg-light-green text-dark-blue px-[40px] py-[6px] font-semibold uppercase rounded-md;
-	font-family: Roboto;
+	@apply border border-transparent text-dark-blue px-[40px] py-[6px] font-semibold uppercase rounded-md;
+	background-color: #24a48b3a;
+	font-family: Sofia Sans;
 	font-size: 16px;
 	letter-spacing: 0.2px;
+	border: 1px solid #2fffd2a4;
+	color: #2fffd2;
 }
 
 .button__clicked {

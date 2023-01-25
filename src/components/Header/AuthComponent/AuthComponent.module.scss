@@ -5,7 +5,7 @@ $avatarSize: 40px;
 	min-width: 170px;
 	background-color: #a9379c29;
 	border-color: #c36eb7c5;
-	transition: background-color .3s, box-shadow .3s;
+	transition: background-color 0.3s, box-shadow 0.3s;
 
 	&:hover {
 		box-shadow: 0 0 8px #c36eb7c5;
@@ -16,6 +16,7 @@ $avatarSize: 40px;
 .title {
 	color: #ffdffa;
 	width: 70px;
+	font-size: 16px;
 	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;

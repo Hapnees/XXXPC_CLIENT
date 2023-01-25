@@ -1,45 +1,37 @@
 .logo {
-	@apply py-[35px] font-semibold uppercase cursor-pointer;
+	@apply py-[35px] font-semibold uppercase;
+	cursor: pointer;
 	font-size: 45px;
 	letter-spacing: 3px;
 }
 
 .menu {
 	@apply flex items-center gap-[20px];
+	font-family: Sofia Sans;
 
-	>input[type='radio'] {
+	> input[type='radio'] {
 		@apply hidden;
 
-		&:checked+label {
-			@apply border-light-green text-light-green;
-		}
-
-		&:checked+label::after {
-			@apply bg-light-green;
+		&:checked + label {
+			@apply text-light-green px-[15px] py-1;
+			background-color: #2fd1b04e;
 		}
 	}
 
-	>label {
-		@apply flex justify-center relative px-[10px] py-[4px] duration-300 uppercase cursor-pointer;
-		font-size: 15px;
-		letter-spacing: 0.3px;
+	> label {
+		@apply flex uppercase;
+		font-size: 17px;
+		letter-spacing: 0.5px;
+		border: 1px solid transparent;
+		border-radius: 6px;
+		cursor: pointer;
 
-		&::after {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: -2px;
-			height: 1px;
-			width: 100%;
-			@apply duration-300;
-		}
+		-webkit-transition: background-color 0.3s, border-color 0.3s, color 0.3s,
+			padding 0.3s;
 
-		&:hover {
-			@apply border-light-green text-light-green;
-		}
+		transition: background-color 0.3s, border-color 0.3s, color 0.3s,
+			padding 0.3s;
 
-		&:hover::after {
-			@apply bg-light-green;
-		}
+		will-change: padding, color;
 	}
 }
