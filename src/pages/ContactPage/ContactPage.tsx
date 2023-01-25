@@ -8,15 +8,17 @@ import { useLazyGetChatQuery, useSendChatRequestMutation } from '@api/chat.api'
 import { useHeaders } from '@hooks/useHeaders'
 import { useAppSelector } from '@hooks/useAppSelector'
 import { ChatStatus } from '@interfaces/chat.interface'
+import { io, Socket } from 'socket.io-client'
 
 const ContactPage = () => {
 	const [getChat, { data: chatData }] = useLazyGetChatQuery()
 	const { isNeededRefresh } = useAppSelector(state => state.auth)
-	const [test, setTest] = useState(false)
 	const [useSendChatRequest] = useSendChatRequestMutation()
 	const [issue, setIssue] = useState('')
 	const isAuth = useAuth()
 	const headers = useHeaders()
+
+	const [socket, setSocket] = useState<Socket>()
 
 	const onClickRequestChat = () => {
 		if (!isAuth) {
@@ -25,7 +27,14 @@ const ContactPage = () => {
 		}
 
 		useSendChatRequest({ issue, headers })
-		setTest(true)
+			.unwrap()
+			.then(() => getChat(headers))
+	}
+
+	const acceptListener = (data: { isAccepted: boolean }) => {
+		if (!data.isAccepted) return
+
+		getChat(headers)
 	}
 
 	useEffect(() => {
@@ -34,8 +43,21 @@ const ContactPage = () => {
 		getChat(headers)
 	}, [isNeededRefresh])
 
+	useEffect(() => {
+		const newSocket = io('http://localhost:8001')
+		setSocket(newSocket)
+	}, [setSocket])
+
+	useEffect(() => {
+		socket?.on('accept', acceptListener)
+
+		return () => {
+			socket?.off('accept')
+		}
+	}, [acceptListener])
+
 	return (
-		<div className='flex justify-center items-center gap-[70px] pt-[100px]'>
+		<div className='flex justify-center items-center gap-[70px] pt-[150px]'>
 			<div>
 				<div className={cl.container__info}>
 					<p className='mb-4'>Контактная информация</p>

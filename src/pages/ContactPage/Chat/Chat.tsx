@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import { useHeaders } from '@hooks/useHeaders'
-import { useSendMessageMutation } from '@api/chat.api'
 import cl from './Chat.module.scss'
 import { Roles } from '@interfaces/roles.interface'
+import { io, Socket } from 'socket.io-client'
+import { useAppSelector } from '@hooks/useAppSelector'
 
 interface IProps {
 	masterName?: string
@@ -16,22 +17,63 @@ interface IProps {
 	}[]
 }
 
+interface Message {
+	text: string
+	role: string
+	userId: number
+	chatId: number
+}
+
+//TODO: move <textarea /> to UI-component
+
 const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 	const headers = useHeaders()
-	const [sendMessage] = useSendMessageMutation()
+
 	const [message, setMessage] = useState('')
+	const [socket, setSocket] = useState<Socket>()
+	const {
+		user: { role, id },
+	} = useAppSelector(state => state.auth)
 
-	const sandMessageWithParams = () => {
+	const [listMessages, setListMessages] = useState<Message[]>(
+		id
+			? messages.map(el => ({
+					text: el.text,
+					role: el.user.role,
+					chatId,
+					userId: id,
+			  }))
+			: []
+	)
+
+	const sendMessage = () => {
+		socket?.emit('message', { text: message, role, chatId, userId: id })
 		setMessage('')
-		sendMessage({ message, chatId, headers })
 	}
 
-	const onKeyDownShiftEnter = (event: React.KeyboardEvent) => {
-		if (event.key === 'Enter' && event.shiftKey) {
-			event.preventDefault()
-			sandMessageWithParams()
-		}
+	// const onKeyDownShiftEnter = (event: React.KeyboardEvent) => {
+	// 	if (event.key === 'Enter' && event.shiftKey) {
+	// 		event.preventDefault()
+	// 		sandMessageWithParams()
+	// 	}
+	// }
+
+	const messageListenter = (message: Message) => {
+		setListMessages([...listMessages, message])
 	}
+
+	useEffect(() => {
+		const newSocket = io('http://localhost:8001')
+		setSocket(newSocket)
+	}, [setSocket])
+
+	useEffect(() => {
+		socket?.on('message', messageListenter)
+
+		return () => {
+			socket?.off('message')
+		}
+	}, [messageListenter])
 
 	return (
 		<div className={cl.wrapper}>
@@ -40,7 +82,7 @@ const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 			</div>
 			<div className='grow'>
 				<ul className={cl.messages}>
-					{messages.map(message => (
+					{/* {messages.map(message => (
 						<li
 							key={message.id}
 							className={
@@ -65,6 +107,32 @@ const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 								</p>
 							</div>
 						</li>
+					))} */}
+					{listMessages.map((el, idx) => (
+						<li
+							key={idx}
+							className={
+								el.role === Roles.USER
+									? 'self-end mr-2'
+									: el.role === Roles.ADMIN
+									? 'self-start ml-2'
+									: ''
+							}
+						>
+							<div>
+								<p
+									className={
+										el.role === Roles.USER
+											? cl.user__message
+											: el.role === Roles.ADMIN
+											? cl.master__message
+											: ''
+									}
+								>
+									{el.text}
+								</p>
+							</div>
+						</li>
 					))}
 				</ul>
 			</div>
@@ -74,9 +142,8 @@ const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 					placeholder='Введите сообщение'
 					value={message}
 					onChange={event => setMessage(event.target.value)}
-					onKeyDown={event => onKeyDownShiftEnter(event)}
 				/>
-				<IoSend className={cl.icon__send} onClick={sandMessageWithParams} />
+				<IoSend className={cl.icon__send} onClick={sendMessage} />
 			</div>
 		</div>
 	)

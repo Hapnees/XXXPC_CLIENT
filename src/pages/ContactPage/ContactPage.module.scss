@@ -35,13 +35,11 @@
 }
 
 .chat__info {
-	@apply flex items-center px-8 mt-16;
+	@apply flex items-center px-8;
 	color: rgb(255, 210, 248);
 	font-size: 18px;
 	width: 580px;
 	height: 300px;
-	// border: 1px solid rgba(220, 121, 205, 0.621);
-	// border-radius: 6px;
 }
 
 .input__message {

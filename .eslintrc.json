@@ -12,6 +12,7 @@
 	},
 	"plugins": ["@typescript-eslint"],
 	"rules": {
-		"no-useless-escape": 0
+		"no-useless-escape": 0,
+		"no-mixed-spaces-and-tabs": 0
 	}
 }

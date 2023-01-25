@@ -14,8 +14,9 @@ export const useRefreshTokens = () => {
 
 	const handler = (event: BeforeUnloadEvent) => {
 		event.preventDefault()
-		updateOnline({ isOnline: false, headers: headersAccess })
-		return ''
+		updateOnline({ isOnline: false, headers: headersAccess }).then(() => {
+			event.returnValue = ''
+		})
 	}
 
 	// Обновляем токены при входе на сайт
@@ -52,7 +53,7 @@ export const useRefreshTokens = () => {
 						user: { role: response.role },
 					})
 				})
-		}, 60_000 * 15)
+		}, 60_000 * 14)
 
 		return () => clearInterval(interval)
 	}, [isAuth])
