@@ -13,10 +13,8 @@ export const useRefreshTokens = () => {
 	const [updateOnline] = useUpdateOnlineMutation()
 
 	const handler = (event: BeforeUnloadEvent) => {
-		event.preventDefault()
-		updateOnline({ isOnline: false, headers: headersAccess }).then(() => {
-			event.returnValue = ''
-		})
+		// event.preventDefault()
+		updateOnline({ isOnline: false, headers: headersAccess })
 	}
 
 	// Обновляем токены при входе на сайт

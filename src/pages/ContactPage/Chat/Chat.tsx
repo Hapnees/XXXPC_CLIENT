@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import { useHeaders } from '@hooks/useHeaders'
 import cl from './Chat.module.scss'
@@ -27,6 +27,7 @@ interface Message {
 //TODO: move <textarea /> to UI-component
 
 const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
+	const isConnectedRoom = useRef(false)
 	const headers = useHeaders()
 
 	const [message, setMessage] = useState('')
@@ -47,7 +48,13 @@ const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 	)
 
 	const sendMessage = () => {
-		socket?.emit('message', { text: message, role, chatId, userId: id })
+		socket?.emit(`message`, {
+			text: message,
+			role,
+			chatId,
+			userId: id,
+		})
+
 		setMessage('')
 	}
 
@@ -63,15 +70,26 @@ const Chat: FC<IProps> = ({ masterName, chatId, messages }) => {
 	}
 
 	useEffect(() => {
+		//TODO: may be need rework ?_?
+		if (!socket || isConnectedRoom.current) return
+
+		socket?.emit('join-room', chatId)
+		isConnectedRoom.current = true
+
+		return () => {
+			socket?.emit('leave-room', chatId)
+		}
+	}, [socket])
+
+	useEffect(() => {
 		const newSocket = io('http://localhost:8001')
 		setSocket(newSocket)
 	}, [setSocket])
 
 	useEffect(() => {
-		socket?.on('message', messageListenter)
-
+		socket?.on(`message`, messageListenter)
 		return () => {
-			socket?.off('message')
+			socket?.off(`message`)
 		}
 	}, [messageListenter])
 

@@ -32,6 +32,6 @@
 		transition: background-color 0.3s, border-color 0.3s, color 0.3s,
 			padding 0.3s;
 
-		will-change: padding, color;
+		will-change: padding;
 	}
 }

@@ -12,8 +12,11 @@ import { io, Socket } from 'socket.io-client'
 
 const ContactPage = () => {
 	const [getChat, { data: chatData }] = useLazyGetChatQuery()
-	const { isNeededRefresh } = useAppSelector(state => state.auth)
-	const [useSendChatRequest] = useSendChatRequestMutation()
+	const {
+		isNeededRefresh,
+		user: { id, role },
+	} = useAppSelector(state => state.auth)
+	// const [useSendChatRequest] = useSendChatRequestMutation()
 	const [issue, setIssue] = useState('')
 	const isAuth = useAuth()
 	const headers = useHeaders()
@@ -26,12 +29,23 @@ const ContactPage = () => {
 			return
 		}
 
-		useSendChatRequest({ issue, headers })
+		socket?.on('chat-request', fullfieldListener)
+		socket?.emit('chat-request', { dto: { issue }, userId: id, role })
+	}
+
+	const fullfieldListener = (data: { isFullfield: boolean }) => {
+		console.log(data)
+		if (!data.isFullfield) return
+
+		getChat(headers)
 			.unwrap()
-			.then(() => getChat(headers))
+			.then(() => {
+				socket?.off('chat-request')
+			})
 	}
 
 	const acceptListener = (data: { isAccepted: boolean }) => {
+		console.log(data)
 		if (!data.isAccepted) return
 
 		getChat(headers)
@@ -49,12 +63,16 @@ const ContactPage = () => {
 	}, [setSocket])
 
 	useEffect(() => {
-		socket?.on('accept', acceptListener)
+		socket?.on('chat-accept', acceptListener)
+
+		if (!chatData) return
+		console.log('WORK!')
+		socket?.emit('chat-accept', { chatId: chatData.id, role })
 
 		return () => {
-			socket?.off('accept')
+			socket?.off('chat-accept')
 		}
-	}, [acceptListener])
+	}, [acceptListener, chatData])
 
 	return (
 		<div className='flex justify-center items-center gap-[70px] pt-[150px]'>
