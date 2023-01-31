@@ -1,3 +1,15 @@
+* {
+	::-webkit-scrollbar {
+		background-color: #95558c;
+		box-shadow: 0 0 5px #f252da;
+		width: 5px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #d265c4;
+	}
+}
+
 .wrapper {
 	@apply flex flex-col;
 	min-height: 100vh;

@@ -6,14 +6,14 @@ import { useUpdateOnlineMutation } from '@api/user.api'
 export const useRefreshTokens = () => {
 	const { setAuth } = useActions()
 	const [refreshTokens] = useRefreshTokensMutation()
-	const { refreshToken } = useAppSelector(state => state.auth)
+	const { refreshToken, isNeededRefresh } = useAppSelector(state => state.auth)
 	const headersRefresh = useHeaders(refreshToken)
 	const headersAccess = useHeaders()
 	const isAuth = useAuth()
 	const [updateOnline] = useUpdateOnlineMutation()
 
 	const handler = (event: BeforeUnloadEvent) => {
-		// event.preventDefault()
+		event.preventDefault()
 		updateOnline({ isOnline: false, headers: headersAccess })
 	}
 
@@ -31,11 +31,16 @@ export const useRefreshTokens = () => {
 					refreshToken: response.tokens.refreshToken,
 					user: { role: response.role },
 				})
-				updateOnline({ isOnline: true, headers: headersAccess })
 			})
 
 		return () => window.removeEventListener('beforeunload', handler)
 	}, [])
+
+	useEffect(() => {
+		if (isNeededRefresh) return
+
+		updateOnline({ isOnline: true, headers: headersAccess })
+	}, [isNeededRefresh])
 
 	// Обновляем токены каждые 14 минут
 	useEffect(() => {
@@ -44,7 +49,6 @@ export const useRefreshTokens = () => {
 			refreshTokens(headersRefresh)
 				.unwrap()
 				.then(response => {
-					console.log('REFRESH TOKENS')
 					setAuth({
 						accessToken: response.tokens.accessToken,
 						refreshToken: response.tokens.refreshToken,

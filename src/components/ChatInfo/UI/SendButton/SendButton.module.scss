@@ -1,0 +1,14 @@
+.button {
+	@apply py-2;
+	margin-top: 20px;
+	width: 100%;
+	border: 1px solid rgba(220, 121, 205, 0.621);
+	color: rgb(255, 210, 248);
+	border-radius: 6px;
+	transition: background-color 0.3s, box-shadow 0.3s;
+
+	&:hover {
+		background-color: rgba(59, 32, 55, 0.238);
+		box-shadow: 0 0 5px rgb(157, 49, 141);
+	}
+}

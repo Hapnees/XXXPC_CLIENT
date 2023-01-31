@@ -1,0 +1,12 @@
+.wrapper {
+	@apply px-6 py-6;
+
+	text-align: center;
+	font-size: 22px;
+	color: rgb(255, 210, 248);
+
+	border: 1px solid rgba(220, 121, 205, 0.621);
+	border-radius: 6px;
+
+	margin-bottom: 10px;
+}

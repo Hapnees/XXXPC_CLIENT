@@ -1,0 +1,20 @@
+.input {
+	@apply px-2 py-[8.5px];
+	resize: none;
+	color: rgb(253, 221, 249);
+	background-color: rgba(63, 34, 59, 0.123);
+	height: 70px;
+	width: 100%;
+	border: 1px solid rgba(147, 81, 137, 0.621);
+	border-radius: 6px;
+	transition: background-color 0.3s;
+
+	&::placeholder {
+		color: rgba(194, 154, 189, 0.743);
+	}
+
+	&:focus,
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.123);
+	}
+}

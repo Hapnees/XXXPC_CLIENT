@@ -1,0 +1,39 @@
+.wrapper {
+	@apply flex items-center gap-2;
+}
+
+input[type='checkbox'] {
+	&:checked ~ div > .mark {
+		display: block;
+	}
+}
+
+.checkbox {
+	display: none;
+	@apply flex items-center justify-center;
+	height: 20px;
+	width: 20px;
+	background-color: rgba(189, 122, 179, 0.402);
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.mark {
+	display: none;
+	color: rgb(255, 116, 234);
+	animation: visible 0.3s ease-in-out;
+}
+
+.label {
+	cursor: pointer;
+	color: rgb(255, 210, 248);
+}
+
+@keyframes visible {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

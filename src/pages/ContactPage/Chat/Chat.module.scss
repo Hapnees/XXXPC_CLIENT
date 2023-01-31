@@ -1,9 +1,22 @@
 .wrapper {
 	@apply flex flex-col;
-	height: 560px;
-	width: 480px;
+	height: 650px;
+	width: 600px;
 	border: 1px solid rgba(220, 121, 205, 0.621);
 	border-radius: 6px;
+
+	scrollbar-color: #95558c transparent;
+	scrollbar-width: 2px;
+
+	::-webkit-scrollbar {
+		background-color: #95558c;
+		box-shadow: 0 0 5px #f252da;
+		width: 2px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #d265c4;
+	}
 }
 
 .header {
@@ -18,23 +31,34 @@
 
 .messages {
 	@apply flex flex-col gap-2 my-4;
-	height: 420px;
+	height: 500px;
 	overflow: auto;
 }
 
-.master__message {
-	@apply px-4 py-2;
-	background-color: rgba(125, 40, 112, 0.614);
+.date {
+	@apply px-3 py-[2px];
+	font-size: 14px;
+	border: 1px solid rgba(123, 37, 112, 0.356);
+	background-color: rgba(125, 46, 159, 0.442);
 	border-radius: 6px;
-	margin-bottom: 5px;
+}
+
+.message_template {
+	@apply flex flex-col px-4 py-2;
+	border-radius: 6px;
+	max-width: 300px;
+	word-wrap: break-word;
+}
+
+.master__message {
+	@extend .message_template;
+	background-color: rgba(125, 40, 112, 0.614);
 }
 
 .user__message {
-	@apply px-4 py-2;
+	@extend .message_template;
 	border: 1px solid rgba(123, 37, 112, 0.356);
 	background-color: rgba(98, 31, 89, 0.442);
-	border-radius: 6px;
-	margin-bottom: 5px;
 }
 
 .container__message {
@@ -49,7 +73,7 @@
 	color: rgb(253, 221, 249);
 	background-color: rgba(63, 34, 59, 0.123);
 	height: 100%;
-	width: 88%;
+	width: 89%;
 	border: 1px solid rgba(147, 81, 137, 0.621);
 	border-radius: 6px;
 	transition: background-color 0.3s;
